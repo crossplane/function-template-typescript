@@ -3,7 +3,8 @@
   "exclude": [
     "node_modules",
     "dist",
-    "function-sdk-typescript"
+    "function-sdk-typescript",
+    "examples"
   ],
   "compilerOptions": {
     // File Layout
