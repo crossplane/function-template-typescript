@@ -1,1 +1,0 @@
-{"version":3,"file":"function.d.ts","sourceRoot":"","sources":["../../../examples/basic-app/function.ts"],"names":[],"mappings":"AAAA,OAAO,EAEH,kBAAkB,EAClB,mBAAmB,EAOnB,KAAK,eAAe,EACpB,KAAK,MAAM,EACd,MAAM,yBAAyB,CAAC;AAMjC,qBAAa,QAAS,YAAW,eAAe;IACtC,WAAW,CACb,GAAG,EAAE,kBAAkB,EACvB,MAAM,CAAC,EAAE,MAAM,GAChB,OAAO,CAAC,mBAAmB,CAAC,CAiM9B;CACJ"}
