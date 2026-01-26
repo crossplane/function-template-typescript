@@ -32,7 +32,7 @@ input:
     composite:
       resource:
         apiVersion: example.crossplane.io/v1alpha1
-        kind: XApp
+        kind: App
         metadata:
           name: test-app
           namespace: default
@@ -99,7 +99,7 @@ expected:
       "composite": {
         "resource": {
           "apiVersion": "example.crossplane.io/v1alpha1",
-          "kind": "XApp",
+          "kind": "App",
           "metadata": {
             "name": "test-app"
           },

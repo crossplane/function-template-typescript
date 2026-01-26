@@ -44,7 +44,7 @@ describe('Function', () => {
         composite: {
           resource: {
             apiVersion: 'example.crossplane.io/v1alpha1',
-            kind: 'XApp',
+            kind: 'App',
             metadata: {
               name: 'test-app',
             },
