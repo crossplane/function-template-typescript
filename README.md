@@ -1,6 +1,6 @@
 # Crossplane Function Template - TypeScript
 
-A template for building Crossplane composition functions in TypeScript using the [@crossplane-org/function-sdk-typescript](https://github.com/crossplane/function-sdk-typescript).
+A template for building Crossplane composition functions in TypeScript using the [@crossplane-org/function-sdk-typescript](https://github.com/upbound/function-sdk-typescript).
 
 ## Overview
 
@@ -8,7 +8,7 @@ This template provides a starting point for developing Crossplane functions that
 
 ## Prerequisites
 
-- Node.js 24 or later
+- Node.js 24 or later recommended.
 - npm
 - Docker (for building container images)
 - TypeScript 5+ or TypeScript 7 (tsgo)
