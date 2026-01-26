@@ -1,117 +1,120 @@
 import {
-    Resource,
-    RunFunctionRequest,
-    RunFunctionResponse,
-    fatal,
-    normal,
-    setDesiredComposedResources,
-    to,
-    getDesiredComposedResources,
-    getDesiredCompositeResource,
-    getObservedCompositeResource,
-    type FunctionHandler,
-    type Logger,
-} from "function-sdk-typescript";
-import { Pod } from "kubernetes-models/v1";
+  Resource,
+  RunFunctionRequest,
+  RunFunctionResponse,
+  fatal,
+  normal,
+  setDesiredComposedResources,
+  to,
+  getDesiredComposedResources,
+  getDesiredCompositeResource,
+  getObservedCompositeResource,
+  type FunctionHandler,
+  type Logger,
+} from '@crossplane-org/function-sdk-typescript';
+import { Pod } from 'kubernetes-models/v1';
 
 /**
  * Function is a sample implementation showing how to use the SDK
  * This creates a Deployment and Pod as example resources
  */
 export class Function implements FunctionHandler {
-    async RunFunction(
-        req: RunFunctionRequest,
-        logger?: Logger,
-    ): Promise<RunFunctionResponse> {
-        const startTime = Date.now();
+  // Note: This implementation is currently synchronous. When adding async operations
+  // (e.g., API calls, database queries), use await with those operations.
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async RunFunction(req: RunFunctionRequest, logger?: Logger): Promise<RunFunctionResponse> {
+    const startTime = Date.now();
 
-        // Set up a minimal response from the request
-        let rsp = to(req);
+    // Set up a minimal response from the request
+    let rsp = to(req);
 
-        try {
-            // Get our Observed Composite
-            const oxr = getObservedCompositeResource(req);
-            logger?.debug({ oxr }, "Observed composite resource");
+    try {
+      // Get our Observed Composite
+      const observedComposite = getObservedCompositeResource(req);
+      logger?.debug({ observedComposite }, 'Observed composite resource');
 
-            // Get our Desired Composite
-            const dxr = getDesiredCompositeResource(req);
-            logger?.debug({ dxr }, "Desired composite resource");
+      // Get our Desired Composite
+      const desiredComposite = getDesiredCompositeResource(req);
+      logger?.debug({ desiredComposite }, 'Desired composite resource');
 
-            // List the Desired Composed resources
-            let dcds = getDesiredComposedResources(req);
+      // List the Desired Composed resources
+      const desiredComposed = getDesiredComposedResources(req);
 
-            // Create resource from a JSON object
-            dcds["deployment"] = Resource.fromJSON({
-                resource: {
-                    apiVersion: "apps/v1",
-                    kind: "Deployment",
-                    metadata: {
-                        name: "my-deployment",
-                        namespace: "foo",
-                    },
-                    spec: {
-                        replicas: 3,
-                        selector: {
-                            matchLabels: {
-                                app: "my-app",
-                            },
-                        },
-                        template: {
-                            metadata: {
-                                labels: {
-                                    app: "my-app",
-                                },
-                            },
-                            spec: {
-                                containers: [
-                                    {
-                                        name: "my-container",
-                                        image: "my-image:latest",
-                                        ports: [
-                                            {
-                                                containerPort: 80,
-                                            },
-                                        ],
-                                    },
-                                ],
-                            },
-                        },
-                    },
+      // Create resource from a JSON object
+      desiredComposed['deployment'] = Resource.fromJSON({
+        resource: {
+          apiVersion: 'apps/v1',
+          kind: 'Deployment',
+          metadata: {
+            name: 'my-deployment',
+            namespace: 'foo',
+          },
+          spec: {
+            replicas: 3,
+            selector: {
+              matchLabels: {
+                app: 'my-app',
+              },
+            },
+            template: {
+              metadata: {
+                labels: {
+                  app: 'my-app',
                 },
-            });
+              },
+              spec: {
+                containers: [
+                  {
+                    name: 'my-container',
+                    image: 'my-image:latest',
+                    ports: [
+                      {
+                        containerPort: 80,
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        },
+      });
 
-            // Create a resource from a Model at https://github.com/tommy351/kubernetes-models-ts
-            const pod = new Pod({
-                metadata: {
-                    name: "pod",
-                    namespace: "default",
-                },
-                spec: {
-                    containers: [],
-                },
-            });
+      // Create a resource from a Model at https://github.com/tommy351/kubernetes-models-ts
+      const pod = new Pod({
+        metadata: {
+          name: 'pod',
+          namespace: 'default',
+        },
+        spec: {
+          containers: [],
+        },
+      });
 
-            pod.validate();
+      pod.validate();
 
-            dcds["pod"] = Resource.fromJSON({ resource: pod.toJSON() });
+      desiredComposed['pod'] = Resource.fromJSON({ resource: pod.toJSON() });
 
-            // Merge dcds with existing resources using the response helper
-            rsp = setDesiredComposedResources(rsp, dcds);
+      // Merge desiredComposed with existing resources using the response helper
+      rsp = setDesiredComposedResources(rsp, desiredComposed);
 
-            const duration = Date.now() - startTime;
-            logger?.info({ duration: `${duration}ms` }, "Function completed successfully");
+      const duration = Date.now() - startTime;
+      logger?.info({ duration: `${duration}ms` }, 'Function completed successfully');
 
-            normal(rsp, "processing complete");
-            return rsp;
-        } catch (error) {
-            const duration = Date.now() - startTime;
-            logger?.error({
-                error: error instanceof Error ? error.message : String(error),
-                duration: `${duration}ms`,
-            }, "Function invocation failed");
+      normal(rsp, 'processing complete');
+      return rsp;
+    } catch (error) {
+      const duration = Date.now() - startTime;
+      logger?.error(
+        {
+          error: error instanceof Error ? error.message : String(error),
+          duration: `${duration}ms`,
+        },
+        'Function invocation failed'
+      );
 
-            fatal(rsp, error instanceof Error ? error.message : String(error));
-            return rsp;
-        }
+      fatal(rsp, error instanceof Error ? error.message : String(error));
+      return rsp;
     }
+  }
 }
