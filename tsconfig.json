@@ -1,11 +1,6 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
-  "exclude": [
-    "node_modules",
-    "dist",
-    "function-sdk-typescript",
-    "examples"
-  ],
+  "exclude": ["node_modules", "dist", "examples", "**/*.test.ts"],
   "compilerOptions": {
     // File Layout
     // "rootDir": "./src",
@@ -45,6 +40,6 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
+    "skipLibCheck": true
   }
 }

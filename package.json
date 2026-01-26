@@ -12,25 +12,47 @@
     "url": "github.com/upbound/function-template-typescript"
   },
   "license": "Apache-2.0",
-  "author": "Steven Borrelli <steve@borrelli.org>",
+  "author": "Crossplane Authors <info@crossplane.org>",
   "type": "module",
   "main": "main.js",
   "scripts": {
-    "docker-build": "docker-build -t function-template-typescript .",
+    "build": "tsgo",
+    "clean": "rm -rf dist/* _build/*",
+    "configuration-xpkg-build": "scripts/configuration-xpkg-build.sh",
+    "configuration-xpkg-push": "scripts/configuration-xpkg-push.sh",
+    "function-docker-build": "scripts/function-docker-build.sh",
+    "function-xpkg-build": "scripts/function-xpkg-build.sh",
+    "function-xpkg-push": "scripts/function-xpkg-push.sh",
+    "function-build-all": "npm run function-docker-build && npm run function-xpkg-build && npm run function-xpkg-push",
     "local": "node dist/main.js --insecure --debug",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "tsc": "tsc",
     "tsgo": "tsgo",
-    "check-types": "tsgo --noEmit"
+    "check-types": "tsgo --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,json,md}\""
   },
   "dependencies": {
+    "@crossplane-org/function-sdk-typescript": "^0.3.0",
     "@types/node": "^24.10.1",
     "commander": "^12.0.0",
-    "function-sdk-typescript": "file:./function-sdk-typescript",
     "kubernetes-models": "^4.5.1",
     "pino": "^10.1.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "yaml": "^2.8.2"
   },
   "devDependencies": {
-    "@typescript/native-preview": "^7.0.0-dev.20251202.1"
+    "@eslint/js": "^9.39.2",
+    "@types/glob": "^8.1.0",
+    "@types/jest": "^30.0.0",
+    "@typescript/native-preview": "^7.0.0-dev.20251202.1",
+    "eslint": "^9.39.2",
+    "glob": "^13.0.0",
+    "jest": "^30.2.0",
+    "prettier": "^3.7.4",
+    "ts-jest": "^29.4.6",
+    "typescript-eslint": "^8.53.0"
   }
 }
