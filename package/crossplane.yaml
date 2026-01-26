@@ -1,0 +1,34 @@
+---
+apiVersion: meta.pkg.crossplane.io/v1beta1
+kind: Function
+metadata:
+  name: function-template-typescript
+  annotations:
+    meta.crossplane.io/maintainer: Crossplane Maintainers <info@crossplane.io>
+    meta.crossplane.io/source: https://github.com/upbound/function-template-typescript
+    meta.crossplane.io/license: Apache-2.0
+    meta.crossplane.io/description: |
+      This function is an example Crossplane function written in Typescript.
+    meta.crossplane.io/readme: |
+      See https://github.com/upbound/function-template-typescript/blob/main/README.md for
+      customizing this function.
+spec:
+  capabilities:
+    - composition
+  crossplane:
+    version: ">=v1.17.0-0"
+  dependsOn:
+    # Example provider dependency
+    # - apiVersion: pkg.crossplane.io/v1
+    #   kind: Provider
+    #   package: xpkg.upbound.io/upbound/provider-aws-ec2
+    #   version: v2
+    - apiVersion: pkg.crossplane.io/v1
+      kind: Function
+      package: xpkg.upbound.io/crossplane-contrib/function-auto-ready
+      version: ">=v0.6.0"
+    # Make this match your function
+    - apiVersion: pkg.crossplane.io/v1
+      kind: Function
+      package: xpkg.upbound.io/crossplane/function-template-typescript-function
+      version: ">=v0.1.0"
