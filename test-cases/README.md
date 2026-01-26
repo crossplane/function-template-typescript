@@ -174,19 +174,15 @@ expected:
         containers: []
 ```
 
-This format:
+The test format:
 
-- **Mirrors the input structure** (consistent with `input.observed.resources`)
+- Mirrors the input structure (consistent with `input.observed.resources`)
 - Makes it easy to reference specific resources by name
 - Validates with **partial match** - only the fields you specify are checked
 
-Benefits:
-
-- Check specific fields without listing every field
-- Validate nested properties
-- Focus assertions on what's important for each test case
-
 ### Composite Status
+
+Test the status of the composition:
 
 ```yaml
 expected:
@@ -241,12 +237,6 @@ This simulates the scenario where:
 1. Crossplane has already created the Deployment resource
 2. The Kubernetes API has reconciled it and set the status fields
 3. Your function receives this observed state and can use it to update the composite status
-
-## Examples
-
-See the existing test case files in this directory:
-
-- [basic-app.yaml](./basic-app.yaml) - Basic application with Deployment and Pod resources
 
 ## Writing Your Own Test Cases
 
