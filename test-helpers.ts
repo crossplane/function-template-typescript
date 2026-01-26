@@ -378,10 +378,11 @@ export function buildObservedResource(config: {
       apiVersion: config.apiVersion,
       kind: config.kind,
       metadata: {
+        ...config.metadata,
         annotations: {
           'crossplane.io/composition-resource-name': config.name,
+          ...config.metadata?.annotations,
         },
-        ...config.metadata,
       },
       ...(config.spec && { spec: config.spec }),
       ...(config.status && { status: config.status }),
