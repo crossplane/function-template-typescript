@@ -122,6 +122,9 @@ jobs:
       - version
       - check-types
 
+    outputs:
+      configuration_xpkg: ${{ steps.save-configuration-package-name.outputs.configuration_xpkg }}
+    
     steps:
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
@@ -136,6 +139,7 @@ jobs:
 
       - name: Save the Configuration package name
         id: save-configuration-package-name
+        
         run: |
           CONFIGURATION_XPKG=${{env.XPKG_NAME}}-${{needs.version.outputs.version}}.xpkg
           echo "configuration_xpkg=${CONFIGURATION_XPKG}" >> $GITHUB_OUTPUT
