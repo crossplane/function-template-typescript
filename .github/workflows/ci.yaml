@@ -135,7 +135,7 @@ jobs:
           version: ${{env.XP_VERSION}}
 
       - name: Build the Configuration Package
-        run:  crossplane xpkg build --package-root="package" --examples-root="examples" -o ${{env.XPKG_NAME}}-${{needs.version.outputs.version}}.xpkg
+        run:  crossplane xpkg build --package-root="package-configuration" --examples-root="examples" -o ${{env.XPKG_NAME}}-${{needs.version.outputs.version}}.xpkg
 
       - name: Save the Configuration package name
         id: save-configuration-package-name
