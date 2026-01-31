@@ -1,6 +1,6 @@
 ---
-apiVersion: meta.pkg.crossplane.io/v1beta1
-kind: Function
+apiVersion: meta.pkg.crossplane.io/v1
+kind: Configuration
 metadata:
   name: function-template-typescript
   annotations:
