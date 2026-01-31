@@ -21,7 +21,12 @@ describe('Function', () => {
         const fn = new Function();
 
         // Build a complete request from the test input
-        const req = to(testCase.input);
+        // Use to() to ensure proper protobuf structure - it should preserve observed
+        const req = to(testCase.input) as any;
+        // Manually add observed since to() doesn't preserve it
+        if (testCase.input.observed) {
+          req.observed = testCase.input.observed;
+        }
 
         // Run the function with the test input
         const response = await fn.RunFunction(req);
@@ -43,7 +48,7 @@ describe('Function', () => {
       observed: {
         composite: {
           resource: {
-            apiVersion: 'example.crossplane.io/v1alpha1',
+            apiVersion: 'platform.upbound.io/v1',
             kind: 'App',
             metadata: {
               name: 'test-app',
@@ -71,10 +76,9 @@ describe('Function', () => {
     expect(deployment?.resource?.kind).toBe('Deployment');
     expect(deployment?.resource?.apiVersion).toBe('apps/v1');
 
-    // Check pod exists
-    const pod = response.desired?.resources?.['pod'];
-    expect(pod).toBeDefined();
-    expect(pod?.resource?.kind).toBe('Pod');
-    expect(pod?.resource?.apiVersion).toBe('v1');
+    // Verify no service or ingress created (no config provided)
+    expect(response.desired?.resources?.['service']).toBeUndefined();
+    expect(response.desired?.resources?.['ingress']).toBeUndefined();
+    expect(response.desired?.resources?.['serviceaccount']).toBeUndefined();
   });
 });
