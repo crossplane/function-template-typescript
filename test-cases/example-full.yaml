@@ -2,7 +2,7 @@
 name: Full Example
 description: Test most input fields
 
-xrPath: examples/app/example-full.yaml
+xrPath: examples/apps/example-full.yaml
 
 expected:
   resourceCount: 4
