@@ -69,7 +69,7 @@ create any type of Kubernetes resource.
 │   ├── README.md                 # Test case documentation
 │   └── example-full.yaml         # Example test case
 ├── examples/                     # Example Crossplane resources
-│   ├── app/                      # Example application resources
+│   ├── apps/                     # Example application resources
 │   └── functions.yaml            # Function pipeline configuration
 ├── scripts/                      # Build and deployment scripts
 │   ├── function-docker-build.sh
@@ -323,9 +323,9 @@ so `xpkg.upbound.io/upbound/function-template-typescript-function` would have a 
 Update the value with the name that represents the Docker registry and image where the function was pushed.
 
 ```yaml
-  - functionRef:
-      name: upbound-function-template-typescript-function
-    step: app
+- functionRef:
+    name: upbound-function-template-typescript-function
+  step: app
 ```
 
 #### Build the Configuration Package

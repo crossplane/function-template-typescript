@@ -60,10 +60,15 @@ describe('Function', () => {
         composite: {
           resource: {},
         },
+        resources: {},
       },
     };
 
-    const req = to(baseInput);
+    const req = to(baseInput) as any;
+    if (baseInput.observed) {
+      req.observed = baseInput.observed;
+    }
+
     const response = await fn.RunFunction(req);
 
     expect(response).toBeDefined();

@@ -183,3 +183,10 @@ expected:
                       name: example-full
                       port:
                         number: 80
+        # tls:
+        #   - secretName: chart-example-tls
+        #     hosts:
+        #       - chart-example.local
+        #   - secretName: api-example-tls
+        #     hosts:
+        #       - api.example.com

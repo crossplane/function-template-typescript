@@ -136,7 +136,7 @@ expected:
 {
   "name": "Test Case Name",
   "description": "Optional description",
-  "xrPath": "examples/app/example-full.yaml",
+  "xrPath": "examples/apps/example-full.yaml",
   "expected": {
     "resourceCount": 4,
     "resourceTypes": ["Deployment", "Service", "ServiceAccount", "Ingress"]

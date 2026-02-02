@@ -33,6 +33,14 @@ interface IngressHost {
 }
 
 /**
+ * Ingress TLS configuration
+ */
+interface IngressTLS {
+  secretName: string;
+  hosts: string[];
+}
+
+/**
  * Function is a sample implementation showing how to use the SDK
  */
 export class Function implements FunctionHandler {
@@ -59,6 +67,10 @@ export class Function implements FunctionHandler {
 
       // Extract parameters from XR spec
       const name = observedComposite?.resource?.metadata?.name;
+      if (!name) {
+        fatal(rsp, 'Composite resource name is required');
+        return rsp;
+      }
       const params = observedComposite?.resource?.spec?.parameters || {};
       const deploymentConfig = params.deployment || {};
       const imageConfig = deploymentConfig.image || {};
@@ -93,7 +105,7 @@ export class Function implements FunctionHandler {
           resource: serviceAccount.toJSON(),
         });
       }
-      
+
       // Create Service if config is provided
       if (serviceConfig && Object.keys(serviceConfig).length > 0) {
         const service = new Service({
@@ -242,6 +254,25 @@ export class Function implements FunctionHandler {
                 },
               })),
             }),
+            ...(ingressConfig.tls &&
+              ingressConfig.tls.length > 0 && {
+                tls: ingressConfig.tls
+                  .map((tlsEntry: IngressTLS) => {
+                    // Validate that hosts are present for each TLS entry
+                    if (!tlsEntry.hosts || tlsEntry.hosts.length === 0) {
+                      logger?.warn(
+                        { secretName: tlsEntry.secretName },
+                        'TLS entry has no hosts defined, skipping'
+                      );
+                      return null;
+                    }
+                    return {
+                      secretName: tlsEntry.secretName,
+                      hosts: tlsEntry.hosts,
+                    };
+                  })
+                  .filter((entry: IngressTLS | null) => entry !== null),
+              }),
           },
         });
 
