@@ -3,7 +3,8 @@
 This repository is a template for building Crossplane composition functions in TypeScript using the [@crossplane-org/function-sdk-typescript](https://github.com/upbound/function-sdk-typescript).
 
 - [Overview](#overview)
-- [Prerequisites](#prerequisites)
+- [Installing the Package](#installing-the-package)
+- [Development Prerequisites](#development-prerequisites)
 - [Project Structure](#project-structure)
 - [Installation](#installation)
 - [Development](#development)
@@ -49,12 +50,43 @@ This template provides a full Typescript project for developing Crossplane funct
 The initial [src/function.ts](src/function.ts) creates sample Deployment, Ingress, Service, and ServiceAccount resources and can be customized to
 create any type of Kubernetes resource.
 
-## Prerequisites
+## Installing the Package
+
+The template is can be deployed as a Crossplane package using a manifest.
+The Configuration package will install the function package, which contains a
+Node docker image and the source code as a dependency.
+
+```yaml
+apiVersion: pkg.crossplane.io/v1
+kind: Configuration
+metadata:
+  name: configuration-template-typescript
+spec:
+  package: index.docker.io/steve/function-template-typescript:v0.1.0-alpha.2
+```
+
+Once installed, confirm that the package an depe
+
+```shell
+crossplane beta trace con
+figuration.pkg configuration-template-typescript
+NAME                                                                              VERSION          INSTALLED   HEALTHY   STATE    STATUS                   
+Configuration/configuration-template-typescript                                   v0.1.0-alpha.3   True        True      -        HealthyPackageRevision   
+├─ ConfigurationRevision/configuration-template-typescript-93b73b00eb21           v0.1.0-alpha.3   -           -         Active                            
+├─ Function/crossplane-contrib-function-auto-ready                                v0.6.0           True        True      -        HealthyPackageRevision   
+│  └─ FunctionRevision/crossplane-contrib-function-auto-ready-59868730b9a9        v0.6.0           -           -         Active                            
+└─ Function/steve-function-template-typescript-function                           v0.1.0-alpha.3   True        True      -        HealthyPackageRevision   
+   └─ FunctionRevision/steve-function-template-typescript-function-cd83fe939bc7   v0.1.0-alpha.3   -    
+```
+
+## Development Prerequisites
+
+To develop Compositions using Typescript, the following is recommended:
 
 - Node.js 24 or later recommended.
 - npm
-- Docker (for building container images)
-- TypeScript 5+ or TypeScript 7 (tsgo)
+- Docker (for building the Node container image)
+- Both TypeScript 5+ and TypeScript 7 (tsgo) are supported.
 
 ## Project Structure
 
