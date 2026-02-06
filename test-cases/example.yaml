@@ -21,8 +21,6 @@ expected:
           app.kubernetes.io/name: hello-app
           app.kubernetes.io/instance: hello-app
           app.kubernetes.io/managed-by: crossplane
-        annotations:
-          crossplane.io/composition-resource-name: serviceaccount
       automountServiceAccountToken: true
 
     service:

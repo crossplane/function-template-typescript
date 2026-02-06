@@ -356,31 +356,9 @@ export function assertResourceTypes(response: RunFunctionResponse, expectedTypes
 }
 
 /**
- * Assert that all resources have the crossplane.io/composition-resource-name annotation
- */
-export function assertCompositionResourceNames(response: RunFunctionResponse) {
-  const desiredResources = response.desired?.resources || {};
-
-  for (const [key, resource] of Object.entries(desiredResources)) {
-    const resourceData = resource?.resource as KubernetesResource | undefined;
-    const metadata = resourceData?.metadata as KubernetesMetadata | undefined;
-    const compositionResourceName =
-      metadata?.annotations?.['crossplane.io/composition-resource-name'];
-
-    if (!compositionResourceName) {
-      throw new Error(
-        `Resource '${key}' is missing required annotation 'crossplane.io/composition-resource-name'`
-      );
-    }
-  }
-}
-
-/**
  * Run all assertions for a test case
  */
 export function assertTestCase(response: RunFunctionResponse, testCase: TestCase) {
-  // Always assert that all resources have composition-resource-name annotation
-  assertCompositionResourceNames(response);
 
   if (testCase.expected.resources) {
     assertResources(response, testCase.expected.resources);

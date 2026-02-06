@@ -94,7 +94,6 @@ export class Function implements FunctionHandler {
             ...commonMetadata,
             name: serviceAccountConfig.name || name,
             annotations: {
-              'crossplane.io/composition-resource-name': 'serviceaccount',
               ...(serviceAccountConfig.annotations || {}),
             },
           },
@@ -111,9 +110,6 @@ export class Function implements FunctionHandler {
         const service = new Service({
           metadata: {
             ...commonMetadata,
-            annotations: {
-              'crossplane.io/composition-resource-name': 'service',
-            },
           },
           spec: {
             type: serviceConfig.type || 'ClusterIP',
@@ -141,7 +137,6 @@ export class Function implements FunctionHandler {
         metadata: {
           ...commonMetadata,
           annotations: {
-            'crossplane.io/composition-resource-name': 'deployment',
             ...(deploymentConfig.podAnnotations || {}),
           },
         },
@@ -227,7 +222,6 @@ export class Function implements FunctionHandler {
           metadata: {
             ...commonMetadata,
             annotations: {
-              'crossplane.io/composition-resource-name': 'ingress',
               ...(ingressConfig.annotations || {}),
             },
           },
