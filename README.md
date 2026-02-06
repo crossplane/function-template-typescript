@@ -3,7 +3,10 @@
 This repository is a template for building Crossplane composition functions in TypeScript using the [@crossplane-org/function-sdk-typescript](https://github.com/upbound/function-sdk-typescript).
 
 - [Overview](#overview)
+- [Running the Example Package](#running-the-example-package)
 - [Installing the Package](#installing-the-package)
+  - [Deploy the Example Manifest](#deploy-the-example-manifest)
+  - [Validate the Example is running](#validate-the-example-is-running)
 - [Development Prerequisites](#development-prerequisites)
 - [Project Structure](#project-structure)
 - [Installation](#installation)
@@ -50,9 +53,13 @@ This template provides a full Typescript project for developing Crossplane funct
 The initial [src/function.ts](src/function.ts) creates sample Deployment, Ingress, Service, and ServiceAccount resources and can be customized to
 create any type of Kubernetes resource.
 
+## Running the Example Package
+
+The configuration and function are published to the [Upbound Marketplace](https://marketplace.upbound.io),
+and can be installed into a Crossplane environment.
+
 ## Installing the Package
 
-The template is can be deployed as a Crossplane package using a manifest.
 The Configuration package will install the function package, which contains a
 Node docker image and the source code as a dependency.
 
@@ -65,7 +72,7 @@ spec:
   package: xpkg.upbound.io/function-template-typescript:v0.1.0
 ```
 
-Once installed, confirm that the package an depe
+Once installed, confirm that the package and dependencies are installed:
 
 ```shell
 crossplane beta trace con
@@ -78,6 +85,54 @@ Configuration/configuration-template-typescript                                 
 └─ Function/upbound-function-template-typescript-function                           v0.1.0   True        True      -        HealthyPackageRevision
    └─ FunctionRevision/upbound-function-template-typescript-function-cd83fe939bc7   v0.1.0   -
 ```
+
+### Deploy the Example Manifest
+
+Once the package is installed and healthy, create the
+target namespace and install the example:
+
+```shell
+$ kubectl apply -f examples/app/ns.yaml
+namespace/example created
+
+$ kubectl apply -f examples/apps/example.yaml
+app.platform.upbound.io/hello-app created
+```
+
+### Validate the Example is running
+
+Use `crossplane beta trace` to validate the Composition:
+
+```shell
+crossplane beta trace -n example app.platform.upbound.io/hello-app
+NAME                                             SYNCED   READY   STATUS
+App/hello-app (example)                          True     True    Available
+├─ Deployment/hello-app-7ff730da5be9 (example)   -        -
+├─ ServiceAccount/my-service-account (example)   -        -
+└─ Service/hello-app-ab25df85445e (example)      -        -
+```
+
+Next, examine the resources in the namespace:
+
+```shell
+kubectl get all,sa -n example -l app.kubernetes.io/instance=hello-app
+NAME                                          READY   STATUS    RESTARTS   AGE
+pod/hello-app-7ff730da5be9-76975c8c4c-mth2n   1/1     Running   0          5m36s
+
+NAME                             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/hello-app-ab25df85445e   ClusterIP   10.96.153.148   <none>        8080/TCP   5m36s
+
+NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/hello-app-7ff730da5be9   1/1     1            1           5m36s
+
+NAME                                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/hello-app-7ff730da5be9-76975c8c4c   1         1         1       5m36s
+
+NAME                                SECRETS   AGE
+serviceaccount/my-service-account   0         5m36s
+```
+
+Change the settings in [`examples/apps/example.yaml`](examples/apps/example.yaml) and observe the generated resources.
 
 ## Development Prerequisites
 
@@ -335,7 +390,7 @@ spec:
     # Make this match your function
     - apiVersion: pkg.crossplane.io/v1
       kind: Function
-      package: xpkg.upbound.io/crossplane/function-template-typescript-function
+      package: xpkg.upbound.io/upbound/function-template-typescript-function
       version: '>=v0.1.0'
 ```
 
