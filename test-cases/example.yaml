@@ -1,0 +1,103 @@
+---
+name: Full Example
+description: Test example with service account and service
+
+xrPath: examples/apps/example.yaml
+
+expected:
+  resourceCount: 3
+  resourceTypes:
+    - ServiceAccount
+    - Service
+    - Deployment
+
+  resources:
+    serviceaccount:
+      kind: ServiceAccount
+      apiVersion: v1
+      metadata:
+        name: my-service-account
+        labels:
+          app.kubernetes.io/name: hello-app
+          app.kubernetes.io/instance: hello-app
+          app.kubernetes.io/managed-by: crossplane
+        annotations:
+          crossplane.io/composition-resource-name: serviceaccount
+      automountServiceAccountToken: true
+
+    service:
+      kind: Service
+      apiVersion: v1
+      metadata:
+        labels:
+          app.kubernetes.io/name: hello-app
+          app.kubernetes.io/instance: hello-app
+          app.kubernetes.io/managed-by: crossplane
+        annotations:
+          crossplane.io/composition-resource-name: service
+      spec:
+        type: ClusterIP
+        ports:
+          - port: 8080
+            targetPort: http
+            protocol: TCP
+            name: http
+        selector:
+          app.kubernetes.io/name: hello-app
+          app.kubernetes.io/instance: hello-app
+
+    deployment:
+      kind: Deployment
+      apiVersion: apps/v1
+      metadata:
+        labels:
+          app.kubernetes.io/name: hello-app
+          app.kubernetes.io/instance: hello-app
+          app.kubernetes.io/managed-by: crossplane
+        annotations:
+          crossplane.io/composition-resource-name: deployment
+          example.crossplane.io/managed-by: "function-template-typescript"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app.kubernetes.io/name: hello-app
+            app.kubernetes.io/instance: hello-app
+        template:
+          metadata:
+            labels:
+              app.kubernetes.io/name: hello-app
+              app.kubernetes.io/instance: hello-app
+              environment: "demo"
+              tier: "frontend"
+            annotations:
+              example.crossplane.io/managed-by: "function-template-typescript"
+          spec:
+            serviceAccountName: my-service-account
+            containers:
+              - name: hello-app
+                image: gcr.io/google-samples/hello-app:1.0
+                imagePullPolicy: IfNotPresent
+                ports:
+                  - name: http
+                    containerPort: 8080
+                    protocol: TCP
+                resources:
+                  limits:
+                    cpu: 100m
+                    memory: 128Mi
+                  requests:
+                    cpu: 50m
+                    memory: 64Mi
+                livenessProbe:
+                  httpGet:
+                    path: /
+                    port: http
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                readinessProbe:
+                  httpGet:
+                    path: /
+                    port: http
+                  initialDelaySeconds: 5
+                  periodSeconds: 5

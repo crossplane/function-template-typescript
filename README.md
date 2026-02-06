@@ -62,7 +62,7 @@ kind: Configuration
 metadata:
   name: configuration-template-typescript
 spec:
-  package: index.docker.io/steve/function-template-typescript:v0.1.0-alpha.2
+  package: xpkg.upbound.io/function-template-typescript:v0.1.0
 ```
 
 Once installed, confirm that the package an depe
@@ -70,13 +70,13 @@ Once installed, confirm that the package an depe
 ```shell
 crossplane beta trace con
 figuration.pkg configuration-template-typescript
-NAME                                                                              VERSION          INSTALLED   HEALTHY   STATE    STATUS                   
-Configuration/configuration-template-typescript                                   v0.1.0-alpha.3   True        True      -        HealthyPackageRevision   
-├─ ConfigurationRevision/configuration-template-typescript-93b73b00eb21           v0.1.0-alpha.3   -           -         Active                            
-├─ Function/crossplane-contrib-function-auto-ready                                v0.6.0           True        True      -        HealthyPackageRevision   
-│  └─ FunctionRevision/crossplane-contrib-function-auto-ready-59868730b9a9        v0.6.0           -           -         Active                            
-└─ Function/steve-function-template-typescript-function                           v0.1.0-alpha.3   True        True      -        HealthyPackageRevision   
-   └─ FunctionRevision/steve-function-template-typescript-function-cd83fe939bc7   v0.1.0-alpha.3   -    
+NAME                                                                              VERSION          INSTALLED   HEALTHY   STATE    STATUS
+Configuration/configuration-template-typescript                                   v0.1.0   True        True      -        HealthyPackageRevision
+├─ ConfigurationRevision/configuration-template-typescript-93b73b00eb21           v0.1.0   -           -         Active
+├─ Function/crossplane-contrib-function-auto-ready                                v0.6.0           True        True      -        HealthyPackageRevision
+│  └─ FunctionRevision/crossplane-contrib-function-auto-ready-59868730b9a9        v0.6.0           -           -         Active
+└─ Function/upbound-function-template-typescript-function                           v0.1.0   True        True      -        HealthyPackageRevision
+   └─ FunctionRevision/upbound-function-template-typescript-function-cd83fe939bc7   v0.1.0   -
 ```
 
 ## Development Prerequisites
