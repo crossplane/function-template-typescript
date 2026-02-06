@@ -40,7 +40,7 @@ name: Test Case Name
 description: Optional description of what this test validates
 
 # Load the composite resource from an external file
-xrPath: examples/apps/example-full.yaml
+xrPath: examples/apps/example.yaml
 
 expected:
   # Expected number of resources to be created
@@ -136,7 +136,7 @@ expected:
 {
   "name": "Test Case Name",
   "description": "Optional description",
-  "xrPath": "examples/apps/example-full.yaml",
+  "xrPath": "examples/apps/example.yaml",
   "expected": {
     "resourceCount": 4,
     "resourceTypes": ["Deployment", "Service", "ServiceAccount", "Ingress"]

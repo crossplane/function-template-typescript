@@ -53,6 +53,8 @@ This template provides a full Typescript project for developing Crossplane funct
 The initial [src/function.ts](src/function.ts) creates sample Deployment, Ingress, Service, and ServiceAccount resources and can be customized to
 create any type of Kubernetes resource.
 
+For an example of configuring cloud resources, refer to [configuration-aws-network-ts](https://github.com/upbound/configuration-aws-network-ts).
+
 ## Running the Example Package
 
 The configuration and function are published to the [Upbound Marketplace](https://marketplace.upbound.io),
@@ -154,7 +156,7 @@ To develop Compositions using Typescript, the following is recommended:
 │   └── main.ts                   # Entry point and server setup
 ├── test-cases/                   # YAML-based test cases
 │   ├── README.md                 # Test case documentation
-│   └── example-full.yaml         # Example test case
+│   └── example.yaml              # Example test case
 ├── examples/                     # Example Crossplane resources
 │   ├── apps/                     # Example application resources
 │   └── functions.yaml            # Function pipeline configuration
@@ -259,7 +261,7 @@ node dist/main.js --insecure --debug
 Once the function is running locally, `crossplane render` can be used to render examples:
 
 ```shell
-crossplane render examples/app/example-full.yaml package-configuration/apis/apps/composition.yaml examples/functions.yaml
+crossplane render examples/app/example.yaml package-configuration/apis/apps/composition.yaml examples/functions.yaml
 ```
 
 ### Available CLI Options
@@ -533,7 +535,7 @@ Create YAML test cases in the [test-cases/](test-cases/) directory. Each test ca
 - Input: The observed composite resource and context
 - Expected: Resource counts, types, and validation rules
 
-See [test-cases/example-full.yaml](test-cases/example-full.yaml) for an example. Tests use [src/test-helpers.ts](src/test-helpers.ts) to load and validate YAML test cases.
+See [test-cases/example.yaml](test-cases/example.yaml) for an example. Tests use [src/test-helpers.ts](src/test-helpers.ts) to load and validate YAML test cases.
 
 ## TypeScript Configuration
 
