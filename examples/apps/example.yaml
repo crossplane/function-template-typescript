@@ -1,0 +1,130 @@
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: example
+---
+apiVersion: platform.upbound.io/v1
+kind: App
+metadata:
+  name: hello-app
+  namespace: example
+spec:
+  parameters:
+    deployment:
+      replicaCount: 1
+
+      image:
+        repository: gcr.io/google-samples/hello-app
+        pullPolicy: IfNotPresent
+        tag: "1.0"
+
+      podAnnotations:
+        example.crossplane.io/managed-by: "function-template-typescript"
+      podLabels:
+        environment: "demo"
+        tier: "frontend"
+
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+
+      livenessProbe:
+        httpGet:
+          path: /
+          port: http
+        initialDelaySeconds: 10
+        periodSeconds: 10
+      readinessProbe:
+        httpGet:
+          path: /
+          port: http
+        initialDelaySeconds: 5
+        periodSeconds: 5
+
+      # Customize the Deployment
+      # # Additional volumes on the output Deployment definition.
+      # volumes:
+      #   - name: config-volume
+      #     configMap:
+      #       name: my-config
+      #   - name: secret-volume
+      #     secret:
+      #       secretName: my-secret
+      #       optional: false
+
+      # # Additional volumeMounts on the output Deployment definition.
+      # volumeMounts:
+      #   - name: config-volume
+      #     mountPath: "/etc/config"
+      #     readOnly: true
+      #   - name: secret-volume
+      #     mountPath: "/etc/secrets"
+      #     readOnly: true
+
+      # nodeSelector:
+      #   kubernetes.io/arch: amd64
+      #   node-type: compute
+
+      # tolerations:
+      #   - key: "dedicated"
+      #     operator: "Equal"
+      #     value: "gpu"
+      #     effect: "NoSchedule"
+
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #         - matchExpressions:
+      #             - key: kubernetes.io/arch
+      #               operator: In
+      #               values:
+      #                 - amd64
+
+    imagePullSecrets: []
+    nameOverride: ""
+    fullnameOverride: ""
+
+    serviceAccount:
+      # Specifies whether a service account should be created (must be explicitly set to true)
+      create: true
+      # Automatically mount a ServiceAccount's API credentials? (defaults to true if not specified)
+      automount: true
+      # Annotations to add to the service account
+      annotations: {}
+      # The name of the service account to use (defaults to app name if not specified)
+      name: "my-service-account"
+
+    # Service configuration - omit this entire section to skip creating a Service
+    service:
+      type: ClusterIP
+      port: 8080
+
+    # Ingress configuration - omit this entire section to skip creating an Ingress
+    # ingress:
+    #   className: "nginx"
+    #   annotations:
+    #     kubernetes.io/ingress.class: nginx
+    #     kubernetes.io/tls-acme: "true"
+    #     cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    #   hosts:
+    #     - host: chart-example.local
+    #       paths:
+    #         - path: /
+    #           pathType: ImplementationSpecific
+    #     - host: api.example.com
+    #       paths:
+    #         - path: /api
+    #           pathType: Prefix
+    #   tls:
+    #     - secretName: chart-example-tls
+    #       hosts:
+    #         - chart-example.local
+    #     - secretName: api-example-tls
+    #       hosts:
+    #         - api.example.com
