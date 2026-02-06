@@ -30,5 +30,5 @@ spec:
     # Make this match your function
     - apiVersion: pkg.crossplane.io/v1
       kind: Function
-      package: xpkg.upbound.io/crossplane/function-template-typescript-function
+      package: xpkg.upbound.io/upbound/function-template-typescript-function
       version: ">=v0.1.0"

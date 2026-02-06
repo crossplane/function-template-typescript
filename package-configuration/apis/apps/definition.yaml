@@ -22,247 +22,236 @@ spec:
             properties:
               parameters:
                 properties:
-                  workloads:
+                  deployment:
                     properties:
-                      app1:
+                      replicaCount:
+                        type: number
+                      image:
                         properties:
-                          affinity:
-                            properties:
-                              nodeAffinity:
-                                properties:
-                                  requiredDuringSchedulingIgnoredDuringExecution:
-                                    properties:
-                                      nodeSelectorTerms:
-                                        items:
-                                          properties:
-                                            matchExpressions:
-                                              items:
-                                                properties:
-                                                  key:
-                                                    type: string
-                                                  operator:
-                                                    type: string
-                                                  values:
-                                                    items:
-                                                      type: string
-                                                    type: array
-                                                type: object
-                                              type: array
-                                          type: object
-                                        type: array
-                                    type: object
-                                type: object
-                            type: object
-                          autoscaling:
-                            properties:
-                              enabled:
-                                type: boolean
-                              maxReplicas:
-                                type: number
-                              minReplicas:
-                                type: number
-                              targetCPUUtilizationPercentage:
-                                type: number
-                            type: object
-                          fullnameOverride:
+                          repository:
                             type: string
-                          image:
+                          pullPolicy:
+                            type: string
+                          tag:
+                            type: string
+                        type: object
+                      podAnnotations:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      podLabels:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      podSecurityContext:
+                        properties:
+                          fsGroup:
+                            type: integer
+                        type: object
+                      securityContext:
+                        properties:
+                          capabilities:
                             properties:
-                              pullPolicy:
-                                type: string
-                              repository:
-                                type: string
-                              tag:
-                                type: string
-                            type: object
-                          imagePullSecrets:
-                            items:
-                              type: object
-                            type: array
-                          ingress:
-                            properties:
-                              annotations:
-                                additionalProperties:
+                              drop:
+                                items:
                                   type: string
-                                type: object
-                              className:
-                                type: string
-                              enabled:
-                                type: boolean
-                              hosts:
-                                items:
-                                  properties:
-                                    host:
-                                      type: string
-                                    paths:
-                                      items:
-                                        properties:
-                                          path:
-                                            type: string
-                                          pathType:
-                                            type: string
-                                        type: object
-                                      type: array
-                                  type: object
-                                type: array
-                              tls:
-                                items:
-                                  properties:
-                                    hosts:
-                                      items:
-                                        type: string
-                                      type: array
-                                    secretName:
-                                      type: string
-                                  type: object
                                 type: array
                             type: object
-                          livenessProbe:
-                            properties:
-                              httpGet:
-                                properties:
-                                  path:
-                                    type: string
-                                  port:
-                                    type: string
-                                type: object
-                              initialDelaySeconds:
-                                type: integer
-                              periodSeconds:
-                                type: integer
-                            type: object
-                          nameOverride:
-                            type: string
-                          namespace:
-                            type: string
-                          nodeSelector:
+                          readOnlyRootFilesystem:
+                            type: boolean
+                          runAsNonRoot:
+                            type: boolean
+                          runAsUser:
+                            type: integer
+                        type: object
+                      resources:
+                        properties:
+                          limits:
                             additionalProperties:
                               type: string
                             type: object
-                          podAnnotations:
+                          requests:
                             additionalProperties:
                               type: string
                             type: object
-                          podLabels:
-                            additionalProperties:
-                              type: string
-                            type: object
-                          podSecurityContext:
+                        type: object
+                      livenessProbe:
+                        properties:
+                          httpGet:
                             properties:
-                              fsGroup:
-                                type: integer
-                            type: object
-                          providerConfigName:
-                            description: Name of the ProviderConfig to use for Kubernetes resources
-                            type: string
-                            default: "default"
-                          readinessProbe:
-                            properties:
-                              httpGet:
-                                properties:
-                                  path:
-                                    type: string
-                                  port:
-                                    type: string
-                                type: object
-                              initialDelaySeconds:
-                                type: integer
-                              periodSeconds:
-                                type: integer
-                            type: object
-                          replicaCount:
-                            type: number
-                          resources:
-                            properties:
-                              limits:
-                                additionalProperties:
-                                  type: string
-                                type: object
-                              requests:
-                                additionalProperties:
-                                  type: string
-                                type: object
-                            type: object
-                          securityContext:
-                            properties:
-                              capabilities:
-                                properties:
-                                  drop:
-                                    items:
-                                      type: string
-                                    type: array
-                                type: object
-                              readOnlyRootFilesystem:
-                                type: boolean
-                              runAsNonRoot:
-                                type: boolean
-                              runAsUser:
-                                type: integer
-                            type: object
-                          service:
-                            properties:
+                              path:
+                                type: string
                               port:
-                                type: number
-                              type:
                                 type: string
                             type: object
-                          serviceAccount:
+                          initialDelaySeconds:
+                            type: integer
+                          periodSeconds:
+                            type: integer
+                        type: object
+                      readinessProbe:
+                        properties:
+                          httpGet:
                             properties:
-                              annotations:
-                                additionalProperties:
-                                  type: string
-                                type: object
-                              automount:
-                                type: boolean
-                              create:
-                                type: boolean
-                              name:
+                              path:
+                                type: string
+                              port:
                                 type: string
                             type: object
-                          tolerations:
-                            items:
+                          initialDelaySeconds:
+                            type: integer
+                          periodSeconds:
+                            type: integer
+                        type: object
+                      volumes:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                            configMap:
                               properties:
-                                effect:
-                                  type: string
-                                key:
-                                  type: string
-                                operator:
-                                  type: string
-                                value:
-                                  type: string
-                              type: object
-                            type: array
-                          volumeMounts:
-                            items:
-                              properties:
-                                mountPath:
-                                  type: string
                                 name:
                                   type: string
-                                readOnly:
+                              type: object
+                            secret:
+                              properties:
+                                secretName:
+                                  type: string
+                                optional:
                                   type: boolean
                               type: object
-                            type: array
-                          volumes:
-                            items:
-                              properties:
-                                configMap:
-                                  properties:
-                                    name:
-                                      type: string
-                                  type: object
-                                name:
-                                  type: string
-                                secret:
-                                  properties:
-                                    optional:
-                                      type: boolean
-                                    secretName:
-                                      type: string
-                                  type: object
-                              type: object
-                            type: array
+                          type: object
+                        type: array
+                      volumeMounts:
+                        items:
+                          properties:
+                            name:
+                              type: string
+                            mountPath:
+                              type: string
+                            readOnly:
+                              type: boolean
+                          type: object
+                        type: array
+                      nodeSelector:
+                        additionalProperties:
+                          type: string
                         type: object
+                      tolerations:
+                        items:
+                          properties:
+                            key:
+                              type: string
+                            operator:
+                              type: string
+                            value:
+                              type: string
+                            effect:
+                              type: string
+                          type: object
+                        type: array
+                      affinity:
+                        properties:
+                          nodeAffinity:
+                            properties:
+                              requiredDuringSchedulingIgnoredDuringExecution:
+                                properties:
+                                  nodeSelectorTerms:
+                                    items:
+                                      properties:
+                                        matchExpressions:
+                                          items:
+                                            properties:
+                                              key:
+                                                type: string
+                                              operator:
+                                                type: string
+                                              values:
+                                                items:
+                                                  type: string
+                                                type: array
+                                            type: object
+                                          type: array
+                                      type: object
+                                    type: array
+                                type: object
+                            type: object
+                        type: object
+                      autoscaling:
+                        properties:
+                          enabled:
+                            type: boolean
+                          minReplicas:
+                            type: number
+                          maxReplicas:
+                            type: number
+                          targetCPUUtilizationPercentage:
+                            type: number
+                        type: object
+                    type: object
+                  imagePullSecrets:
+                    items:
+                      type: object
+                    type: array
+                  nameOverride:
+                    type: string
+                  fullnameOverride:
+                    type: string
+                  serviceAccount:
+                    properties:
+                      create:
+                        type: boolean
+                      automount:
+                        type: boolean
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      name:
+                        type: string
+                    type: object
+                  service:
+                    properties:
+                      type:
+                        type: string
+                      port:
+                        type: number
+                    type: object
+                  ingress:
+                    properties:
+                      className:
+                        type: string
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        type: object
+                      hosts:
+                        items:
+                          properties:
+                            host:
+                              type: string
+                            paths:
+                              items:
+                                properties:
+                                  path:
+                                    type: string
+                                  pathType:
+                                    type: string
+                                type: object
+                              type: array
+                          type: object
+                        type: array
+                      tls:
+                        items:
+                          properties:
+                            secretName:
+                              type: string
+                            hosts:
+                              items:
+                                type: string
+                              type: array
+                          type: object
+                        type: array
                     type: object
                 type: object
             type: object

@@ -20,7 +20,49 @@ npm test -- --watch
 
 Each test case file should define one or more test cases with the following structure:
 
-### YAML Format
+### Input Options
+
+Test cases support two ways to provide the composite resource input:
+
+1. **Using `xrPath`** (recommended for reusing example files):
+   - Reference an external file containing the composite resource
+   - Keeps test cases clean and allows reuse of example resources
+
+2. **Using `input.observed`** (inline definition):
+   - Define the composite resource directly in the test case
+   - Useful for small test cases or when you need full control
+
+### YAML Format with xrPath
+
+```yaml
+---
+name: Test Case Name
+description: Optional description of what this test validates
+
+# Load the composite resource from an external file
+xrPath: examples/apps/example-full.yaml
+
+expected:
+  # Expected number of resources to be created
+  resourceCount: 4
+
+  # Expected resource types (partial list)
+  resourceTypes:
+    - Deployment
+    - Service
+    - ServiceAccount
+    - Ingress
+
+  # Specific resource assertions (partial match) - map format
+  resources:
+    deployment:
+      kind: Deployment
+      apiVersion: apps/v1
+      spec:
+        replicas: 2
+```
+
+### YAML Format with Inline Input
 
 ```yaml
 ---
@@ -88,7 +130,21 @@ expected:
     ready: true
 ```
 
-### JSON Format
+### JSON Format with xrPath
+
+```json
+{
+  "name": "Test Case Name",
+  "description": "Optional description",
+  "xrPath": "examples/apps/example-full.yaml",
+  "expected": {
+    "resourceCount": 4,
+    "resourceTypes": ["Deployment", "Service", "ServiceAccount", "Ingress"]
+  }
+}
+```
+
+### JSON Format with Inline Input
 
 ```json
 {
@@ -246,6 +302,8 @@ This simulates the scenario where:
 
 ### Tips
 
+- **Use `xrPath`** to reference existing example files - this keeps tests clean and promotes reuse
+- **Use inline `input`** for small test cases or when you need to test specific edge cases
 - Use partial matching to focus on the most important assertions
 - Group related test cases in the same file (multiple YAML documents or JSON array)
 - Use descriptive names and descriptions to document what each test validates
