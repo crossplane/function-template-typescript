@@ -53,6 +53,8 @@ This template provides a full Typescript project for developing Crossplane funct
 The initial [src/function.ts](src/function.ts) creates sample Deployment, Ingress, Service, and ServiceAccount resources and can be customized to
 create any type of Kubernetes resource.
 
+For an example of configuring cloud resources, refer to [configuration-aws-network-ts](https://github.com/upbound/configuration-aws-network-ts).
+
 ## Running the Example Package
 
 The configuration and function are published to the [Upbound Marketplace](https://marketplace.upbound.io),
