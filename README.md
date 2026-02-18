@@ -61,9 +61,9 @@ For an example of configuring cloud resources, refer to [configuration-aws-netwo
 1. Clone this repository
 2. Update [package.json](package.json) for your Project.
 3. Update the code at [src/function.ts](src/function.ts)
-4. Crate your API (`CompositeResourceDefinition`) like the one for `App` in [package-configuration/apis/apps/definition.yaml](package-configuration/apis/apps/definition.yaml)
+4. Create your API (`CompositeResourceDefinition`) like the one for `App` in [package-configuration/apis/apps/definition.yaml](package-configuration/apis/apps/definition.yaml)
 5. Create an example in the `examples` directory like [examples/apps/example.yaml](examples/apps/example.yaml)
-6. Build, locally-run and `crossplane render` your Composition. See the [Development](#development) second.
+6. Build, locally-run and `crossplane render` your Composition. See the [Development](#development) section.
 
 ## Running the Example Package
 
@@ -402,7 +402,7 @@ spec:
     # Make this match your function
     - apiVersion: pkg.crossplane.io/v1
       kind: Function
-      package: xpkg.upbound.io/crossplane-contrib/function-template-typescript-function
+      package: xpkg.upbound.io/crossplane/function-template-typescript-function
       version: '>=v0.1.0'
 ```
 
