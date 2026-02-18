@@ -30,7 +30,7 @@ env:
   # By Default this points to Github Package Registry. 
   XPKG_REPO: ghcr.io/${{ github.repository_owner }}
 
-  # The example template pushes to Upbound Marketplace
+  # To push to Upbound marketplace.
   #XPKG_REPO: xpkg.upbound.io/${{ github.repository_owner }}
   
   # Names for the Configuration and corresponding Function Packages
@@ -239,16 +239,15 @@ jobs:
         uses: crossplane-contrib/setup-crossplane-action@cb8aac3f1246b19f101e7f85fd0a38623b4d5ad3 #v0.1.1
         with:
           version: ${{env.XP_VERSION}}
-
-      - name: Login to Upbound
+      
+      - name: Login to GitHub Container Registry
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef #v3.6.0
-        if: env.XPKG_ACCESS_ID != ''
         with:
-          registry: xpkg.upbound.io
-          username: ${{ secrets.XPKG_ACCESS_ID }}
-          password: ${{ secrets.XPKG_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push Multi-Platform Function Packages to Upbound
+      - name: Push Multi-Platform Function Packages to Repository
         if: env.XPKG_ACCESS_ID != ''
         run: |
           FN_XPKG_FILES=$(echo "${{env.XPKG_FN_NAME}}"-*-${{needs.version.outputs.version}}.xpkg | tr ' ' ',')
@@ -256,7 +255,7 @@ jobs:
             echo "Error: No xpkg files found matching pattern"
             exit 1
           fi
-          crossplane --verbose xpkg push --package-files ${FN_XPKG_FILES} ${{env.XPKG_REPO}}/${{env.XPKG_FN_NAME}}:${{needs.version.outputs.version}}
+          crossplane --verbose xpkg push --package-files ${FN_XPKG_FILES} ${XPKG_REPO@L}/${{env.XPKG_FN_NAME}}:${{needs.version.outputs.version}}
 
       - name: Push Configuration Package to Upbound
         if: env.XPKG_ACCESS_ID != ''
@@ -266,5 +265,5 @@ jobs:
             echo "Error: Configuration package ${CONF_XPKG_FILE} not found"
             exit 1
           fi
-          crossplane --verbose xpkg push --package-files ${CONF_XPKG_FILE} ${{env.XPKG_REPO}}/${{env.XPKG_NAME}}:${{needs.version.outputs.version}}
+          crossplane --verbose xpkg push --package-files ${CONF_XPKG_FILE} ${XPKG_REPO@L}/${{env.XPKG_NAME}}:${{needs.version.outputs.version}}
 
