@@ -4,7 +4,7 @@ FN_NAME=${CONFIGURATION_NAME}-function
 
 # Change this to your docker repo
 # XPKG_REPO=ghcr.io/crossplane
-XPKG_REPO=xpkg.upbound.io/upbound
+XPKG_REPO=xpkg.upbound.io/crossplane
 BUILD_PLATFORMS="amd64 arm64"
 BUILD_DIR=_build
 DOCKER_IMAGE_DIR=${BUILD_DIR}/docker_images
