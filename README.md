@@ -1,8 +1,9 @@
 # Crossplane Function Template - TypeScript <!-- omit in toc -->
 
-This repository is a template for building Crossplane composition functions in TypeScript using the [@crossplane-org/function-sdk-typescript](https://github.com/upbound/function-sdk-typescript).
+This repository is a template for building Crossplane composition functions in TypeScript using the [@crossplane-org/function-sdk-typescript](https://github.com/crossplane/function-sdk-typescript).
 
 - [Overview](#overview)
+- [Quick Start](#quick-start)
 - [Running the Example Package](#running-the-example-package)
 - [Installing the Package](#installing-the-package)
   - [Deploy the Example Manifest](#deploy-the-example-manifest)
@@ -55,6 +56,15 @@ create any type of Kubernetes resource.
 
 For an example of configuring cloud resources, refer to [configuration-aws-network-ts](https://github.com/upbound/configuration-aws-network-ts).
 
+## Quick Start
+
+1. Clone this repository
+2. Update [package.json](package.json) for your Project.
+3. Update the code at [src/function.ts](src/function.ts)
+4. Create your API (`CompositeResourceDefinition`) like the one for `App` in [package-configuration/apis/apps/definition.yaml](package-configuration/apis/apps/definition.yaml)
+5. Create an example in the `examples` directory like [examples/apps/example.yaml](examples/apps/example.yaml)
+6. Build, locally-run and `crossplane render` your Composition. See the [Development](#development) section.
+
 ## Running the Example Package
 
 The configuration and function are published to the [Upbound Marketplace](https://marketplace.upbound.io),
@@ -71,7 +81,7 @@ kind: Configuration
 metadata:
   name: configuration-template-typescript
 spec:
-  package: xpkg.upbound.io/function-template-typescript:v0.1.0
+  package: xpkg.upbound.io/crossplane/function-template-typescript:v0.1.0
 ```
 
 Once installed, confirm that the package and dependencies are installed:
@@ -84,8 +94,8 @@ Configuration/configuration-template-typescript                                 
 ├─ ConfigurationRevision/configuration-template-typescript-93b73b00eb21           v0.1.0   -           -         Active
 ├─ Function/crossplane-contrib-function-auto-ready                                v0.6.0           True        True      -        HealthyPackageRevision
 │  └─ FunctionRevision/crossplane-contrib-function-auto-ready-59868730b9a9        v0.6.0           -           -         Active
-└─ Function/upbound-function-template-typescript-function                           v0.1.0   True        True      -        HealthyPackageRevision
-   └─ FunctionRevision/upbound-function-template-typescript-function-cd83fe939bc7   v0.1.0   -
+└─ Function/crossplane-function-template-typescript-function                           v0.1.0   True        True      -        HealthyPackageRevision
+   └─ FunctionRevision/crossplane-function-template-typescript-function-cd83fe939bc7   v0.1.0   -
 ```
 
 ### Deploy the Example Manifest
@@ -261,7 +271,7 @@ node dist/main.js --insecure --debug
 Once the function is running locally, `crossplane render` can be used to render examples:
 
 ```shell
-crossplane render examples/app/example.yaml package-configuration/apis/apps/composition.yaml examples/functions.yaml
+crossplane render examples/apps/example.yaml package-configuration/apis/apps/composition.yaml examples/functions.yaml
 ```
 
 ### Available CLI Options
@@ -392,7 +402,7 @@ spec:
     # Make this match your function
     - apiVersion: pkg.crossplane.io/v1
       kind: Function
-      package: xpkg.upbound.io/upbound/function-template-typescript-function
+      package: xpkg.upbound.io/crossplane/function-template-typescript-function
       version: '>=v0.1.0'
 ```
 
@@ -406,14 +416,14 @@ Since the Kind in the template function is an `App`, we create a subdirectory `a
 
 Update the `composition.yaml` file to have the functionRef of the first pipeline step to refer to the name
 of the function once it is installed. Crossplane creates a function name of `<docker repository>-<function-name>`,
-so `xpkg.upbound.io/upbound/function-template-typescript-function` would have a `functionRef.name` of
-`upbound-function-template-typescript-function`.
+so `xpkg.upbound.io/crossplane/function-template-typescript-function` would have a `functionRef.name` of
+`crossplane-function-template-typescript-function`.
 
 Update the value with the name that represents the Docker registry and image where the function was pushed.
 
 ```yaml
 - functionRef:
-    name: upbound-function-template-typescript-function
+    name: crossplane-function-template-typescript-function
   step: app
 ```
 
