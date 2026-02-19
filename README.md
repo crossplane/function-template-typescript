@@ -65,7 +65,7 @@ For an example of configuring cloud resources, refer to [configuration-aws-netwo
 4. Create your API (`CompositeResourceDefinition`) like the one for `App` in [package-configuration/apis/apps/definition.yaml](package-configuration/apis/apps/definition.yaml)
 5. Create an example in the `examples` directory like [examples/apps/example.yaml](examples/apps/example.yaml)
 6. Build, locally-run and `crossplane render` your Composition. See the [Development](#development) section.
-7. Package and deploy your function to a Crossplane cluster [#building-and-packaging](#building-and-packaging).
+7. Package and deploy your function to a Crossplane cluster. See [Building and Packaging](#building-and-packaging).
 
 ## Running the Example Package
 
@@ -89,14 +89,14 @@ spec:
 Once installed, confirm that the package and dependencies are installed:
 
 ```shell
-crossplane beta trace configuration.pkg configuration-template-typescript
+crossplane beta trace configuration.pkg crossplane-configuration-template-typescript
 NAME                                                                              VERSION          INSTALLED   HEALTHY   STATE    STATUS
-Configuration/configuration-template-typescript                                   v0.2.0   True        True      -        HealthyPackageRevision
-├─ ConfigurationRevision/configuration-template-typescript-93b73b00eb21           v0.2.0   -           -         Active
+Configuration/crossplane-configuration-template-typescript                                   v0.2.0   True        True      -        HealthyPackageRevision
+├─ ConfigurationRevision/crossplane-configuration-template-typescript-93b73b00eb21           v0.2.0   -           -         Active
 ├─ Function/crossplane-contrib-function-auto-ready                                v0.6.0           True        True      -        HealthyPackageRevision
 │  └─ FunctionRevision/crossplane-contrib-function-auto-ready-59868730b9a9        v0.6.0           -           -         Active
-└─ Function/crossplane-function-template-typescript-function                           v0.2.0   True        True      -        HealthyPackageRevision
-   └─ FunctionRevision/crossplane-function-template-typescript-function-cd83fe939bc7   v0.2.0   -
+└─ Function/crossplane-function-template-typescript                           v0.2.0   True        True      -        HealthyPackageRevision
+   └─ FunctionRevision/crossplane-function-template-typescript-cd83fe939bc7   v0.2.0   -
 ```
 
 ### Deploy the Example Manifest
@@ -154,7 +154,7 @@ To develop Compositions using Typescript, the following is recommended:
 - Node.js 24 or later recommended.
 - npm
 - Docker (for building the Node container image)
-- Both TypeScript 5+ and TypeScript 7 (tsgo) are supported.
+- Both TypeScript 5+ (tsc) and TypeScript 7 (tsgo) compilers are supported.
 
 ## Project Structure
 
@@ -290,7 +290,7 @@ the Function and dependencies to a Crossplane environment.
 The function package can be installed into a cluster and the `definition.yaml` and `composition.yaml` files located in [package-configuration/apis/apps/](package-configuration/apis/apps/) can be applied to the cluster using `kubectl`. The
 manifest to build the function package is located in [package-function/crossplane.yaml](package-function/crossplane.yaml).
 
-To install everything together in a Configuration package, [package-configuration/crossplane.yaml](package-configuration/crossplane.yaml).
+To install everything together in a Configuration package, use [package-configuration/crossplane.yaml](package-configuration/crossplane.yaml).
 
 ### About Crossplane Packages
 
