@@ -21,8 +21,7 @@ spec:
     # Make this match your function
     - apiVersion: pkg.crossplane.io/v1
       kind: Function
-      package: index.docker.io/steve/function-template-typescript
-      #package: ghcr.io/crossplane/function-template-typescript
+      package: ghcr.io/crossplane/function-template-typescript
       version: ">=v0.2.0"
     # Automatically set ready status for resources
     - apiVersion: pkg.crossplane.io/v1

@@ -29,7 +29,7 @@ env:
   #XPKG_REPO: xpkg.upbound.io/${{ github.repository_owner }}
   
   # Names for the Configuration and corresponding Function Packages
-  XPKG_NAME: configuration-function-typescript
+  XPKG_NAME: configuration-template-typescript
   # The function package name. We can use the repo name.
   XPKG_FN_NAME: ${{ github.event.repository.name }}
 
