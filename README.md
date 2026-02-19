@@ -1,6 +1,6 @@
 # Crossplane Function Template - TypeScript <!-- omit in toc -->
 
-This repository is a template for building Crossplane composition functions in TypeScript using the [@crossplane-org/function-sdk-typescript](https://github.com/crossplane/function-sdk-typescript).
+This repository is a template for building Crossplane Composition functions in TypeScript using the [@crossplane-org/function-sdk-typescript](https://github.com/crossplane/function-sdk-typescript).
 
 - [Overview](#overview)
 - [Quick Start](#quick-start)
@@ -19,6 +19,7 @@ This repository is a template for building Crossplane composition functions in T
   - [Running Locally](#running-locally)
   - [Available CLI Options](#available-cli-options)
 - [Building and Packaging](#building-and-packaging)
+  - [About Crossplane Packages](#about-crossplane-packages)
   - [Local Docker Build](#local-docker-build)
   - [Build the Crossplane Function Package](#build-the-crossplane-function-package)
     - [Update the Function Package Metadata](#update-the-function-package-metadata)
@@ -64,6 +65,7 @@ For an example of configuring cloud resources, refer to [configuration-aws-netwo
 4. Create your API (`CompositeResourceDefinition`) like the one for `App` in [package-configuration/apis/apps/definition.yaml](package-configuration/apis/apps/definition.yaml)
 5. Create an example in the `examples` directory like [examples/apps/example.yaml](examples/apps/example.yaml)
 6. Build, locally-run and `crossplane render` your Composition. See the [Development](#development) section.
+7. Package and deploy your function to a Crossplane cluster [#building-and-packaging](#building-and-packaging).
 
 ## Running the Example Package
 
@@ -79,23 +81,22 @@ Node docker image and the source code as a dependency.
 apiVersion: pkg.crossplane.io/v1
 kind: Configuration
 metadata:
-  name: configuration-template-typescript
+  name: crossplane-configuration-template-typescript
 spec:
-  package: xpkg.upbound.io/crossplane/function-template-typescript:v0.1.0
+  package: ghcr.io/crossplane/configuration-template-typescript:v0.2.0
 ```
 
 Once installed, confirm that the package and dependencies are installed:
 
 ```shell
-crossplane beta trace con
-figuration.pkg configuration-template-typescript
+crossplane beta trace configuration.pkg configuration-template-typescript
 NAME                                                                              VERSION          INSTALLED   HEALTHY   STATE    STATUS
-Configuration/configuration-template-typescript                                   v0.1.0   True        True      -        HealthyPackageRevision
-├─ ConfigurationRevision/configuration-template-typescript-93b73b00eb21           v0.1.0   -           -         Active
+Configuration/configuration-template-typescript                                   v0.2.0   True        True      -        HealthyPackageRevision
+├─ ConfigurationRevision/configuration-template-typescript-93b73b00eb21           v0.2.0   -           -         Active
 ├─ Function/crossplane-contrib-function-auto-ready                                v0.6.0           True        True      -        HealthyPackageRevision
 │  └─ FunctionRevision/crossplane-contrib-function-auto-ready-59868730b9a9        v0.6.0           -           -         Active
-└─ Function/crossplane-function-template-typescript-function                           v0.1.0   True        True      -        HealthyPackageRevision
-   └─ FunctionRevision/crossplane-function-template-typescript-function-cd83fe939bc7   v0.1.0   -
+└─ Function/crossplane-function-template-typescript-function                           v0.2.0   True        True      -        HealthyPackageRevision
+   └─ FunctionRevision/crossplane-function-template-typescript-function-cd83fe939bc7   v0.2.0   -
 ```
 
 ### Deploy the Example Manifest
@@ -284,7 +285,16 @@ crossplane render examples/apps/example.yaml package-configuration/apis/apps/com
 ## Building and Packaging
 
 [Crossplane Packages](https://docs.crossplane.io/master/packages/) are used to deploy
-the Function and and dependencies to a Crossplane environment. Each of the package types serves a distinct purpose:
+the Function and and dependencies to a Crossplane environment.
+
+The function package can be installed into a cluster and the `definition.yaml` and `composition.yaml` files located in [package-configuration/apis/apps/](package-configuration/apis/apps/) can be applied to the cluster using `kubectl`. The
+manifest to build the function package is located in [package-function/crossplane.yaml](package-function/crossplane.yaml).
+
+To install everything together in a Configuration package, [package-configuration/crossplane.yaml](package-configuration/crossplane.yaml).
+
+### About Crossplane Packages
+
+Each of Crossplane Package types serves a distinct purpose:
 
 - Configuration Packages contain the API (Composite Resource Definition) and Composition (Pipeline Steps). Configuration packages can pull in other packages types as dependencies.
 - The Function Package contains the TypeScript files bundled in a runnable Node Docker container.
@@ -293,8 +303,8 @@ the Function and and dependencies to a Crossplane environment. Each of the packa
 ```mermaid
 flowchart LR
     subgraph CP [Configuration Package]
-    XRD(CompositeResourceDefinition XRD)
-    C(Composition)
+    XRD(CompositeResourceDefinition XRD definition.yaml)
+    C(Composition composition.yaml)
     end
     CP -->|dependsOn| FP
     subgraph FP [Function Package]
@@ -326,8 +336,8 @@ packed into a Function Package:
 ```shell
 tree _build/docker_images
 _build/docker_images
-├── function-template-typescript-function-runtime-amd64-v0.1.0.tar
-└── function-template-typescript-function-runtime-arm64-v0.1.0.tar
+├── function-template-typescript-function-runtime-amd64-v0.2.0.tar
+└── function-template-typescript-function-runtime-arm64-v0.2.0.tar
 ```
 
 The Dockerfile uses a multi-stage build:
@@ -363,8 +373,8 @@ the `_build/xpkg` directory:
 ```shell
 $ tree _build/xpkg
 _build/xpkg
-├── function-template-typescript-function-amd64-v0.1.0.xpkg
-└── function-template-typescript-function-arm64-v0.1.0.xpkg
+├── function-template-typescript-function-amd64-v0.2.0.xpkg
+└── function-template-typescript-function-arm64-v0.2.0.xpkg
 ```
 
 These packages can be pushed to any Docker Registry using `crossplane xpkg push`. Update the `XPKG_REPO` in the [env](env)
@@ -403,7 +413,7 @@ spec:
     - apiVersion: pkg.crossplane.io/v1
       kind: Function
       package: xpkg.upbound.io/crossplane/function-template-typescript-function
-      version: '>=v0.1.0'
+      version: '>=v0.2.0'
 ```
 
 A Crossplane Composition requires a `CompositeResourceDefinition` (XRD) and `Composite`. These
@@ -442,9 +452,9 @@ images and the Configuration package image:
 ```shell
 tree _build/xpkg
 _build/xpkg
-├── function-template-typescript-function-amd64-v0.1.0.xpkg
-├── function-template-typescript-function-arm64-v0.1.0.xpkg
-└── function-template-typescript-v0.1.0.xpkg
+├── function-template-typescript-function-amd64-v0.2.0.xpkg
+├── function-template-typescript-function-arm64-v0.2.0.xpkg
+└── function-template-typescript-v0.2.0.xpkg
 ```
 
 Push this package to a Docker registry:
