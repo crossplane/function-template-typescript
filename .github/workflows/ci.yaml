@@ -33,9 +33,6 @@ env:
   # The function package 
   XPKG_FN_NAME: ${{ github.event.repository.name }}-function
 
-  # ghcr.io
-  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
 jobs:
   # Compute the package version once and share it with all jobs that need it
   version:
@@ -242,7 +239,7 @@ jobs:
           version: ${{env.XP_VERSION}}
       
       - name: Login to GitHub Container Registry
-        if: env.GITHUB_TOKEN != ''
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef #v3.6.0
         with:
           registry: ghcr.io
@@ -250,7 +247,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push Multi-Platform Function Packages to Repository
-        if: env.GITHUB_TOKEN != ''
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
           FN_XPKG_FILES=$(echo "${{env.XPKG_FN_NAME}}"-*-${{needs.version.outputs.version}}.xpkg | tr ' ' ',')
           if [ -z "${FN_XPKG_FILES}" ] || [ "${FN_XPKG_FILES}" = "${{env.XPKG_FN_NAME}}-*-${{needs.version.outputs.version}}.xpkg" ]; then
@@ -260,7 +257,7 @@ jobs:
           crossplane --verbose xpkg push --package-files ${FN_XPKG_FILES} ${XPKG_REPO@L}/${{env.XPKG_FN_NAME}}:${{needs.version.outputs.version}}
 
       - name: Push Configuration Package to Repository
-        if: env.GITHUB_TOKEN != ''
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: |
           CONF_XPKG_FILE="${{env.XPKG_NAME}}-${{needs.version.outputs.version}}.xpkg"
           if [ ! -f "${CONF_XPKG_FILE}" ]; then
