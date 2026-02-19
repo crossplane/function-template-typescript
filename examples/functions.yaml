@@ -2,12 +2,13 @@
 apiVersion: pkg.crossplane.io/v1beta1
 kind: Function
 metadata:
-  name: upbound-function-template-typescript-function
+  name: crossplane-function-template-typescript
   annotations:
     # This tells crossplane beta render to connect to the function locally.
+    # "npm run local" will run a local version of the function.
     render.crossplane.io/runtime: Development
 spec:
-  package: xpkg.upbound.io/crossplane/function-template-typescript:v0.1.0
+  package: ghcr.io/crossplane/function-template-typescript:v0.2.0
 ---
 apiVersion: pkg.crossplane.io/v1beta1
 kind: Function

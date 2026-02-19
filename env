@@ -1,6 +1,6 @@
 VERSION=$(npm pkg get version | tr -d '"')
-CONFIGURATION_NAME=$(npm pkg get name | tr -d '"')
-FN_NAME=${CONFIGURATION_NAME}-function
+CONFIGURATION_NAME=$(npm pkg get name | tr -d '"' | sed -e s/function/configuration/)
+FN_NAME=$(npm pkg get name | tr -d '"')
 
 # Change this to your docker repo
 XPKG_REPO=ghcr.io/crossplane
