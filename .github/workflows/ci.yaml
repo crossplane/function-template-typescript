@@ -29,9 +29,9 @@ env:
   #XPKG_REPO: xpkg.upbound.io/${{ github.repository_owner }}
   
   # Names for the Configuration and corresponding Function Packages
-  XPKG_NAME: ${{ github.event.repository.name }}
-  # The function package 
-  XPKG_FN_NAME: ${{ github.event.repository.name }}-function
+  XPKG_NAME: configuration-function-typescript
+  # The function package name. We can use the repo name.
+  XPKG_FN_NAME: ${{ github.event.repository.name }}
 
 jobs:
   # Compute the package version once and share it with all jobs that need it

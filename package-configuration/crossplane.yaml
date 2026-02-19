@@ -2,7 +2,7 @@
 apiVersion: meta.pkg.crossplane.io/v1
 kind: Configuration
 metadata:
-  name: function-template-typescript
+  name: configuration-template-typescript
   annotations:
     meta.crossplane.io/maintainer: Crossplane Maintainers <info@crossplane.io>
     meta.crossplane.io/source: https://github.com/crossplane/function-template-typescript
@@ -18,17 +18,20 @@ spec:
   crossplane:
     version: ">=v1.17.0-0"
   dependsOn:
+    # Make this match your function
+    - apiVersion: pkg.crossplane.io/v1
+      kind: Function
+      package: index.docker.io/steve/function-template-typescript
+      #package: ghcr.io/crossplane/function-template-typescript
+      version: ">=v0.2.0"
+    # Automatically set ready status for resources
+    - apiVersion: pkg.crossplane.io/v1
+      kind: Function
+      package: xpkg.upbound.io/crossplane-contrib/function-auto-ready
+      version: ">=v0.6.0"
     # Example provider dependency
     # - apiVersion: pkg.crossplane.io/v1
     #   kind: Provider
     #   package: xpkg.upbound.io/upbound/provider-aws-ec2
     #   version: v2
-    - apiVersion: pkg.crossplane.io/v1
-      kind: Function
-      package: xpkg.upbound.io/crossplane-contrib/function-auto-ready
-      version: ">=v0.6.0"
-    # Make this match your function
-    - apiVersion: pkg.crossplane.io/v1
-      kind: Function
-      package: xpkg.upbound.io/upbound/function-template-typescript-function
-      version: ">=v0.1.0"
+

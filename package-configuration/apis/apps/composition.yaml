@@ -9,7 +9,7 @@ spec:
   mode: Pipeline
   pipeline:
   - functionRef:
-      name: upbound-function-template-typescript-function
+      name: crossplane-function-template-typescript
     step: app
   - functionRef:
       name: crossplane-contrib-function-auto-ready
