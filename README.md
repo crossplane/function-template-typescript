@@ -69,7 +69,7 @@ For an example of configuring cloud resources, refer to [configuration-aws-netwo
 
 ## Running the Example Package
 
-The configuration and function are published to the [Upbound Marketplace](https://marketplace.upbound.io),
+The configuration and function packages are published to the [Github package registry](https://github.com/orgs/crossplane/packages?repo_name=function-template-typescript),
 and can be installed into a Crossplane environment.
 
 ## Installing the Package
@@ -89,14 +89,13 @@ spec:
 Once installed, confirm that the package and dependencies are installed:
 
 ```shell
-crossplane beta trace configuration.pkg crossplane-configuration-template-typescript
-NAME                                                                              VERSION          INSTALLED   HEALTHY   STATE    STATUS
-Configuration/crossplane-configuration-template-typescript                                   v0.2.0   True        True      -        HealthyPackageRevision
-├─ ConfigurationRevision/crossplane-configuration-template-typescript-93b73b00eb21           v0.2.0   -           -         Active
-├─ Function/crossplane-contrib-function-auto-ready                                v0.6.0           True        True      -        HealthyPackageRevision
-│  └─ FunctionRevision/crossplane-contrib-function-auto-ready-59868730b9a9        v0.6.0           -           -         Active
-└─ Function/crossplane-function-template-typescript                           v0.2.0   True        True      -        HealthyPackageRevision
-   └─ FunctionRevision/crossplane-function-template-typescript-cd83fe939bc7   v0.2.0   -
+$ kubectl get pkg 
+NAME                                                                           INSTALLED   HEALTHY   PACKAGE                                                       AGE
+configuration.pkg.crossplane.io/crossplane-configuration-template-typescript   True        True      ghcr.io/crossplane/configuration-template-typescript:v0.2.0   49m
+
+NAME                                                                 INSTALLED   HEALTHY   PACKAGE                                                         AGE
+function.pkg.crossplane.io/crossplane-contrib-function-auto-ready    True        True      xpkg.upbound.io/crossplane-contrib/function-auto-ready:v0.6.0   48m
+function.pkg.crossplane.io/crossplane-function-template-typescript   True        True      ghcr.io/crossplane/function-template-typescript:v0.2.0          49m 
 ```
 
 ### Deploy the Example Manifest
@@ -117,7 +116,7 @@ app.platform.upbound.io/hello-app created
 Use `crossplane beta trace` to validate the Composition:
 
 ```shell
-crossplane beta trace -n example app.platform.upbound.io/hello-app
+$ crossplane beta trace -n example app.platform.upbound.io/hello-app
 NAME                                             SYNCED   READY   STATUS
 App/hello-app (example)                          True     True    Available
 ├─ Deployment/hello-app-7ff730da5be9 (example)   -        -
@@ -128,7 +127,7 @@ App/hello-app (example)                          True     True    Available
 Next, examine the resources in the namespace:
 
 ```shell
-kubectl get all,sa -n example -l app.kubernetes.io/instance=hello-app
+$ kubectl get all,sa -n example -l app.kubernetes.io/instance=hello-app
 NAME                                          READY   STATUS    RESTARTS   AGE
 pod/hello-app-7ff730da5be9-76975c8c4c-mth2n   1/1     Running   0          5m36s
 
@@ -334,10 +333,10 @@ The images will be saved as `tar` files that can be
 packed into a Function Package:
 
 ```shell
-tree _build/docker_images
+$ tree _build/docker_images
 _build/docker_images
-├── function-template-typescript-function-runtime-amd64-v0.2.0.tar
-└── function-template-typescript-function-runtime-arm64-v0.2.0.tar
+├── function-template-typescript-runtime-amd64-v0.2.0.tar
+└── function-template-typescript-runtime-arm64-v0.2.0.tar
 ```
 
 The Dockerfile uses a multi-stage build:
@@ -373,8 +372,8 @@ the `_build/xpkg` directory:
 ```shell
 $ tree _build/xpkg
 _build/xpkg
-├── function-template-typescript-function-amd64-v0.2.0.xpkg
-└── function-template-typescript-function-arm64-v0.2.0.xpkg
+├── function-template-typescript-amd64-v0.2.0.xpkg
+└── function-template-typescript-arm64-v0.2.0.xpkg
 ```
 
 These packages can be pushed to any Docker Registry using `crossplane xpkg push`. Update the `XPKG_REPO` in the [env](env)
@@ -412,7 +411,7 @@ spec:
     # Make this match your function
     - apiVersion: pkg.crossplane.io/v1
       kind: Function
-      package: xpkg.upbound.io/crossplane/function-template-typescript-function
+      package: ghcr.io/crossplane/function-template-typescript
       version: '>=v0.2.0'
 ```
 
@@ -426,14 +425,14 @@ Since the Kind in the template function is an `App`, we create a subdirectory `a
 
 Update the `composition.yaml` file to have the functionRef of the first pipeline step to refer to the name
 of the function once it is installed. Crossplane creates a function name of `<docker repository>-<function-name>`,
-so `xpkg.upbound.io/crossplane/function-template-typescript-function` would have a `functionRef.name` of
-`crossplane-function-template-typescript-function`.
+so `ghcr.io/crossplane/function-template-typescript` would have a `functionRef.name` of
+`crossplane-function-template-typescript`.
 
 Update the value with the name that represents the Docker registry and image where the function was pushed.
 
 ```yaml
 - functionRef:
-    name: crossplane-function-template-typescript-function
+    name: crossplane-function-template-typescript
   step: app
 ```
 
@@ -450,11 +449,11 @@ The `_build/xpkg` directory will contain the multi-platform function
 images and the Configuration package image:
 
 ```shell
-tree _build/xpkg
+$ tree _build/xpkg
 _build/xpkg
-├── function-template-typescript-function-amd64-v0.2.0.xpkg
-├── function-template-typescript-function-arm64-v0.2.0.xpkg
-└── function-template-typescript-v0.2.0.xpkg
+├── configuration-template-typescript-v0.2.0.xpkg
+├── function-template-typescript-amd64-v0.2.0.xpkg
+└── function-template-typescript-arm64-v0.2.0.xpkg
 ```
 
 Push this package to a Docker registry:
