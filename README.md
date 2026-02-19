@@ -285,7 +285,7 @@ crossplane render examples/apps/example.yaml package-configuration/apis/apps/com
 ## Building and Packaging
 
 [Crossplane Packages](https://docs.crossplane.io/master/packages/) are used to deploy
-the Function and and dependencies to a Crossplane environment.
+the Function and dependencies to a Crossplane environment.
 
 The function package can be installed into a cluster and the `definition.yaml` and `composition.yaml` files located in [package-configuration/apis/apps/](package-configuration/apis/apps/) can be applied to the cluster using `kubectl`. The
 manifest to build the function package is located in [package-function/crossplane.yaml](package-function/crossplane.yaml).

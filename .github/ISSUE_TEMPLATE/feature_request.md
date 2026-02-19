@@ -16,7 +16,7 @@ for questions, support, and discussion.
 Please tell us a little about your use case - it's okay if it's hypothetical!
 Leading with this context helps frame the feature request so we can ensure we
 implement it sensibly.
---->
+-->
 
 ### How could this Function help solve your problem?
 <!--
