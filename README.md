@@ -83,7 +83,7 @@ kind: Configuration
 metadata:
   name: crossplane-configuration-template-typescript
 spec:
-  package: ghcr.io/crossplane/configuration-template-typescript:v0.2.0
+  package: ghcr.io/crossplane/configuration-template-typescript:v0.2.1
 ```
 
 Once installed, confirm that the package and dependencies are installed:
@@ -91,11 +91,11 @@ Once installed, confirm that the package and dependencies are installed:
 ```shell
 $ kubectl get pkg 
 NAME                                                                           INSTALLED   HEALTHY   PACKAGE                                                       AGE
-configuration.pkg.crossplane.io/crossplane-configuration-template-typescript   True        True      ghcr.io/crossplane/configuration-template-typescript:v0.2.0   49m
+configuration.pkg.crossplane.io/crossplane-configuration-template-typescript   True        True      ghcr.io/crossplane/configuration-template-typescript:v0.2.1   49m
 
 NAME                                                                 INSTALLED   HEALTHY   PACKAGE                                                         AGE
 function.pkg.crossplane.io/crossplane-contrib-function-auto-ready    True        True      xpkg.upbound.io/crossplane-contrib/function-auto-ready:v0.6.0   48m
-function.pkg.crossplane.io/crossplane-function-template-typescript   True        True      ghcr.io/crossplane/function-template-typescript:v0.2.0          49m 
+function.pkg.crossplane.io/crossplane-function-template-typescript   True        True      ghcr.io/crossplane/function-template-typescript:v0.2.1          49m 
 ```
 
 ### Deploy the Example Manifest
@@ -335,8 +335,8 @@ packed into a Function Package:
 ```shell
 $ tree _build/docker_images
 _build/docker_images
-├── function-template-typescript-runtime-amd64-v0.2.0.tar
-└── function-template-typescript-runtime-arm64-v0.2.0.tar
+├── function-template-typescript-runtime-amd64-v0.2.1.tar
+└── function-template-typescript-runtime-arm64-v0.2.1.tar
 ```
 
 The Dockerfile uses a multi-stage build:
@@ -372,8 +372,8 @@ the `_build/xpkg` directory:
 ```shell
 $ tree _build/xpkg
 _build/xpkg
-├── function-template-typescript-amd64-v0.2.0.xpkg
-└── function-template-typescript-arm64-v0.2.0.xpkg
+├── function-template-typescript-amd64-v0.2.1.xpkg
+└── function-template-typescript-arm64-v0.2.1.xpkg
 ```
 
 These packages can be pushed to any Docker Registry using `crossplane xpkg push`. Update the `XPKG_REPO` in the [env](env)
@@ -412,7 +412,7 @@ spec:
     - apiVersion: pkg.crossplane.io/v1
       kind: Function
       package: ghcr.io/crossplane/function-template-typescript
-      version: '>=v0.2.0'
+      version: '>=v0.2.1'
 ```
 
 A Crossplane Composition requires a `CompositeResourceDefinition` (XRD) and `Composite`. These
@@ -451,9 +451,9 @@ images and the Configuration package image:
 ```shell
 $ tree _build/xpkg
 _build/xpkg
-├── configuration-template-typescript-v0.2.0.xpkg
-├── function-template-typescript-amd64-v0.2.0.xpkg
-└── function-template-typescript-arm64-v0.2.0.xpkg
+├── configuration-template-typescript-v0.2.1.xpkg
+├── function-template-typescript-amd64-v0.2.1.xpkg
+└── function-template-typescript-arm64-v0.2.1.xpkg
 ```
 
 Push this package to a Docker registry:
