@@ -83,7 +83,7 @@ kind: Configuration
 metadata:
   name: crossplane-configuration-template-typescript
 spec:
-  package: ghcr.io/crossplane/configuration-template-typescript:v0.2.1
+  package: ghcr.io/crossplane/configuration-template-typescript:v0.3.0
 ```
 
 Once installed, confirm that the package and dependencies are installed:
@@ -91,11 +91,11 @@ Once installed, confirm that the package and dependencies are installed:
 ```shell
 $ kubectl get pkg 
 NAME                                                                           INSTALLED   HEALTHY   PACKAGE                                                       AGE
-configuration.pkg.crossplane.io/crossplane-configuration-template-typescript   True        True      ghcr.io/crossplane/configuration-template-typescript:v0.2.1   49m
+configuration.pkg.crossplane.io/crossplane-configuration-template-typescript   True        True      ghcr.io/crossplane/configuration-template-typescript:v0.3.0   49m
 
 NAME                                                                 INSTALLED   HEALTHY   PACKAGE                                                         AGE
 function.pkg.crossplane.io/crossplane-contrib-function-auto-ready    True        True      xpkg.upbound.io/crossplane-contrib/function-auto-ready:v0.6.0   48m
-function.pkg.crossplane.io/crossplane-function-template-typescript   True        True      ghcr.io/crossplane/function-template-typescript:v0.2.1          49m 
+function.pkg.crossplane.io/crossplane-function-template-typescript   True        True      ghcr.io/crossplane/function-template-typescript:v0.3.0          49m 
 ```
 
 ### Deploy the Example Manifest
@@ -335,8 +335,8 @@ packed into a Function Package:
 ```shell
 $ tree _build/docker_images
 _build/docker_images
-├── function-template-typescript-runtime-amd64-v0.2.1.tar
-└── function-template-typescript-runtime-arm64-v0.2.1.tar
+├── function-template-typescript-runtime-amd64-v0.3.0.tar
+└── function-template-typescript-runtime-arm64-v0.3.0.tar
 ```
 
 The Dockerfile uses a multi-stage build:
@@ -372,8 +372,8 @@ the `_build/xpkg` directory:
 ```shell
 $ tree _build/xpkg
 _build/xpkg
-├── function-template-typescript-amd64-v0.2.1.xpkg
-└── function-template-typescript-arm64-v0.2.1.xpkg
+├── function-template-typescript-amd64-v0.3.0.xpkg
+└── function-template-typescript-arm64-v0.3.0.xpkg
 ```
 
 These packages can be pushed to any Docker Registry using `crossplane xpkg push`. Update the `XPKG_REPO` in the [env](env)
@@ -412,7 +412,7 @@ spec:
     - apiVersion: pkg.crossplane.io/v1
       kind: Function
       package: ghcr.io/crossplane/function-template-typescript
-      version: '>=v0.2.1'
+      version: '>=v0.3.0'
 ```
 
 A Crossplane Composition requires a `CompositeResourceDefinition` (XRD) and `Composite`. These
@@ -451,9 +451,9 @@ images and the Configuration package image:
 ```shell
 $ tree _build/xpkg
 _build/xpkg
-├── configuration-template-typescript-v0.2.1.xpkg
-├── function-template-typescript-amd64-v0.2.1.xpkg
-└── function-template-typescript-arm64-v0.2.1.xpkg
+├── configuration-template-typescript-v0.3.0.xpkg
+├── function-template-typescript-amd64-v0.3.0.xpkg
+└── function-template-typescript-arm64-v0.3.0.xpkg
 ```
 
 Push this package to a Docker registry:
@@ -489,7 +489,8 @@ The SDK provides helper functions for working with Crossplane resources:
 - `getObservedComposedResources(req)` - Get observed composed resources
 - `getDesiredComposedResources(req)` - Get desired composed resources
 - `setDesiredComposedResources(rsp, resources)` - Set desired composed resources
-- `Resource.fromJSON()` - Create resources from JSON
+- `fromModel(model)` - Convert a Kubernetes model to a Crossplane Resource (added in SDK v0.4.0)
+- `Resource.fromJSON()` - Create resources from JSON (legacy method, use `fromModel` for kubernetes-models)
 - `normal(rsp, message)` - Add a normal condition to the response
 - `fatal(rsp, message)` - Add a fatal condition to the response
 - `to(req)` - Create a minimal response from a request
@@ -525,6 +526,7 @@ desiredComposed['my-config'] = resource;
 The template includes [kubernetes-models](https://github.com/tommy351/kubernetes-models-ts) for type-safe K8s resource creation:
 
 ```typescript
+import { fromModel } from '@crossplane-org/function-sdk-typescript';
 import { Pod } from 'kubernetes-models/v1';
 
 const pod = new Pod({
@@ -544,8 +546,11 @@ const pod = new Pod({
 
 pod.validate(); // Validate the resource
 
-desiredComposed['my-pod'] = Resource.fromJSON({ resource: pod.toJSON() });
+// Use fromModel to convert kubernetes-models to Crossplane Resources
+desiredComposed['my-pod'] = fromModel(pod);
 ```
+
+**Note**: As of SDK v0.4.0, the `fromModel` helper function provides a cleaner way to convert kubernetes-models objects to Crossplane Resources. The legacy approach using `Resource.fromJSON({ resource: pod.toJSON() })` is still supported but `fromModel` is now the recommended method.
 
 ### Testing Your Function
 
@@ -643,7 +648,7 @@ Manual workflow for creating Git tags:
 
 ### Production Dependencies
 
-- `@crossplane-org/function-sdk-typescript` - Crossplane function SDK
+- `@crossplane-org/function-sdk-typescript` - Crossplane function SDK (v0.4.0+ includes `fromModel` helper)
 - `commander` - CLI argument parsing
 - `pino` - Structured logging
 - `kubernetes-models` - Type-safe Kubernetes resource models
