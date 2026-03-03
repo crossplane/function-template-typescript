@@ -1,8 +1,8 @@
 import {
-  Resource,
   RunFunctionRequest,
   RunFunctionResponse,
   fatal,
+  fromModel,
   normal,
   setDesiredComposedResources,
   to,
@@ -100,9 +100,7 @@ export class Function implements FunctionHandler {
           automountServiceAccountToken: serviceAccountConfig.automount ?? true,
         });
 
-        desiredComposed['serviceaccount'] = Resource.fromJSON({
-          resource: serviceAccount.toJSON(),
-        });
+        desiredComposed['serviceaccount'] = fromModel(serviceAccount);
       }
 
       // Create Service if config is provided
@@ -128,9 +126,7 @@ export class Function implements FunctionHandler {
           },
         });
 
-        desiredComposed['service'] = Resource.fromJSON({
-          resource: service.toJSON(),
-        });
+        desiredComposed['service'] = fromModel(service);
       }
 
       const deployment = new Deployment({
@@ -212,9 +208,7 @@ export class Function implements FunctionHandler {
         },
       });
 
-      desiredComposed['deployment'] = Resource.fromJSON({
-        resource: deployment.toJSON(),
-      });
+      desiredComposed['deployment'] = fromModel(deployment);
 
       // Create Ingress if config is provided
       if (ingressConfig && Object.keys(ingressConfig).length > 0) {
@@ -270,9 +264,7 @@ export class Function implements FunctionHandler {
           },
         });
 
-        desiredComposed['ingress'] = Resource.fromJSON({
-          resource: ingress.toJSON(),
-        });
+        desiredComposed['ingress'] = fromModel(ingress);
       }
 
       // Merge desiredComposed with existing resources using the response helper
