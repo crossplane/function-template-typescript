@@ -1,6 +1,6 @@
 {
   "name": "function-template-typescript",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Template for Crossplane function in Typescript",
   "keywords": [
     "crossplane",
