@@ -394,7 +394,7 @@ npm run function-build-all
 
 The function package can be installed directly without the need for a Configuration
 package. This installation method requires the application of the
-CompositionResourceDefinition Composition manifests.
+CompositeResourceDefinition and Composition manifests.
 
 ```yaml
 apiVersion: pkg.crossplane.io/v1
