@@ -22,12 +22,12 @@ spec:
     - apiVersion: pkg.crossplane.io/v1
       kind: Function
       package: ghcr.io/crossplane/function-template-typescript
-      version: ">=v0.3.0"
+      version: ">=v0.4.0"
     # Automatically set ready status for resources
     - apiVersion: pkg.crossplane.io/v1
       kind: Function
       package: xpkg.upbound.io/crossplane-contrib/function-auto-ready
-      version: ">=v0.6.0"
+      version: ">=v0.6.1"
     # Example provider dependency
     # - apiVersion: pkg.crossplane.io/v1
     #   kind: Provider

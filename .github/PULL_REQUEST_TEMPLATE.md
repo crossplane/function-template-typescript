@@ -19,7 +19,7 @@ We love pull requests that fix an open issue. If yours does, use the below line
 to indicate which issue it fixes, for example "Fixes #500".
 -->
 
-Fixes # 
+Fixes #
 
 I have:
 
