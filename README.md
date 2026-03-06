@@ -24,6 +24,7 @@ This repository is a template for building Crossplane Composition functions in T
   - [Build the Crossplane Function Package](#build-the-crossplane-function-package)
     - [Update the Function Package Metadata](#update-the-function-package-metadata)
     - [Building the Function Package](#building-the-function-package)
+  - [Installing the Function Package Directly without a Configuration Package](#installing-the-function-package-directly-without-a-configuration-package)
   - [Configuration Package](#configuration-package)
     - [Updating the `crossplane.yaml` File](#updating-the-crossplaneyaml-file)
     - [Build the Configuration Package](#build-the-configuration-package)
@@ -32,6 +33,8 @@ This repository is a template for building Crossplane Composition functions in T
   - [Key SDK Functions](#key-sdk-functions)
   - [Example: Creating a Resource](#example-creating-a-resource)
   - [Using Kubernetes Models](#using-kubernetes-models)
+  - [Checking Resource Conditions (SDK v0.5.0+)](#checking-resource-conditions-sdk-v050)
+  - [Detecting Crossplane Capabilities (SDK v0.5.0+)](#detecting-crossplane-capabilities-sdk-v050)
   - [Testing Your Function](#testing-your-function)
 - [TypeScript Configuration](#typescript-configuration)
 - [GitHub Actions](#github-actions)
@@ -83,19 +86,19 @@ kind: Configuration
 metadata:
   name: crossplane-configuration-template-typescript
 spec:
-  package: ghcr.io/crossplane/configuration-template-typescript:v0.3.0
+  package: ghcr.io/crossplane/configuration-template-typescript:v0.4.0
 ```
 
 Once installed, confirm that the package and dependencies are installed:
 
 ```shell
-$ kubectl get pkg 
+$ kubectl get pkg
 NAME                                                                           INSTALLED   HEALTHY   PACKAGE                                                       AGE
-configuration.pkg.crossplane.io/crossplane-configuration-template-typescript   True        True      ghcr.io/crossplane/configuration-template-typescript:v0.3.0   49m
+configuration.pkg.crossplane.io/crossplane-configuration-template-typescript   True        True      ghcr.io/crossplane/configuration-template-typescript:v0.4.0   49m
 
 NAME                                                                 INSTALLED   HEALTHY   PACKAGE                                                         AGE
-function.pkg.crossplane.io/crossplane-contrib-function-auto-ready    True        True      xpkg.upbound.io/crossplane-contrib/function-auto-ready:v0.6.0   48m
-function.pkg.crossplane.io/crossplane-function-template-typescript   True        True      ghcr.io/crossplane/function-template-typescript:v0.3.0          49m 
+function.pkg.crossplane.io/crossplane-contrib-function-auto-ready    True        True      xpkg.upbound.io/crossplane-contrib/function-auto-ready:v0.6.1   48m
+function.pkg.crossplane.io/crossplane-function-template-typescript   True        True      ghcr.io/crossplane/function-template-typescript:v0.4.0          49m
 ```
 
 ### Deploy the Example Manifest
@@ -335,8 +338,8 @@ packed into a Function Package:
 ```shell
 $ tree _build/docker_images
 _build/docker_images
-├── function-template-typescript-runtime-amd64-v0.3.0.tar
-└── function-template-typescript-runtime-arm64-v0.3.0.tar
+├── function-template-typescript-runtime-amd64-v0.4.0.tar
+└── function-template-typescript-runtime-arm64-v0.4.0.tar
 ```
 
 The Dockerfile uses a multi-stage build:
@@ -372,8 +375,8 @@ the `_build/xpkg` directory:
 ```shell
 $ tree _build/xpkg
 _build/xpkg
-├── function-template-typescript-amd64-v0.3.0.xpkg
-└── function-template-typescript-arm64-v0.3.0.xpkg
+├── function-template-typescript-amd64-v0.4.0.xpkg
+└── function-template-typescript-arm64-v0.4.0.xpkg
 ```
 
 These packages can be pushed to any Docker Registry using `crossplane xpkg push`. Update the `XPKG_REPO` in the [env](env)
@@ -387,11 +390,36 @@ npm run function-xpkg-push
 npm run function-build-all
 ```
 
+### Installing the Function Package Directly without a Configuration Package
+
+The function package can be installed directly without the need for a Configuration
+package. This installation method requires the application of the
+CompositionResourceDefinition Composition manifests.
+
+```yaml
+apiVersion: pkg.crossplane.io/v1
+kind: Function
+metadata:
+  name: crossplane-function-template-typescript
+spec:
+  package: ghcr.io/crossplane/function-template-typescript:v0.4.0
+```
+
+Next, apply the CompositeResourceDefinition and Composition manifests:
+
+```shell
+$ kubectl apply -f package-configuration/apis/apps
+composition.apiextensions.crossplane.io/apps.platform.upbound.io created
+compositeresourcedefinition.apiextensions.crossplane.io/apps.platform.upbound.io created
+```
+
 ### Configuration Package
 
-With the Function package created, the Configuration
-Package can be generated. This package will install the Function
-Package as a dependency.
+Crossplane configuration packages install CompositeResourceDefinition and Composition manifests
+and install Functions and Providers as dependencies.
+
+With the Function package created, the Configuration Package can be generated. We'll
+update the Configuration package metadata to include our function as a dependency.
 
 #### Updating the `crossplane.yaml` File
 
@@ -412,7 +440,7 @@ spec:
     - apiVersion: pkg.crossplane.io/v1
       kind: Function
       package: ghcr.io/crossplane/function-template-typescript
-      version: '>=v0.3.0'
+      version: '>=v0.4.0'
 ```
 
 A Crossplane Composition requires a `CompositeResourceDefinition` (XRD) and `Composite`. These
@@ -435,7 +463,6 @@ Update the value with the name that represents the Docker registry and image whe
     name: crossplane-function-template-typescript
   step: app
 ```
-
 #### Build the Configuration Package
 
 Build the Crossplane configuration package:
@@ -451,9 +478,9 @@ images and the Configuration package image:
 ```shell
 $ tree _build/xpkg
 _build/xpkg
-├── configuration-template-typescript-v0.3.0.xpkg
-├── function-template-typescript-amd64-v0.3.0.xpkg
-└── function-template-typescript-arm64-v0.3.0.xpkg
+├── configuration-template-typescript-v0.4.0.xpkg
+├── function-template-typescript-amd64-v0.4.0.xpkg
+└── function-template-typescript-arm64-v0.4.0.xpkg
 ```
 
 Push this package to a Docker registry:
@@ -484,13 +511,26 @@ export class Function implements FunctionHandler {
 
 The SDK provides helper functions for working with Crossplane resources:
 
+**Resource Access:**
+
 - `getObservedCompositeResource(req)` - Get the observed composite resource (XR)
 - `getDesiredCompositeResource(req)` - Get the desired composite resource
 - `getObservedComposedResources(req)` - Get observed composed resources
 - `getDesiredComposedResources(req)` - Get desired composed resources
 - `setDesiredComposedResources(rsp, resources)` - Set desired composed resources
+
+**Resource Conversion:**
+
 - `fromModel(model)` - Convert a Kubernetes model to a Crossplane Resource (added in SDK v0.4.0)
 - `Resource.fromJSON()` - Create resources from JSON (legacy method, use `fromModel` for kubernetes-models)
+
+**Status and Conditions (added in SDK v0.5.0):**
+
+- `getCondition(resource, type)` - Extract a status condition by type from a resource. Returns a condition object with `status` set to `"Unknown"` if the condition is not found. Useful for checking resource readiness and health.
+- `hasCapability(req, capability)` - Check if a specific Crossplane capability is available. Use the `Capability` enum to check for features like `CAPABILITY_REQUIRED_RESOURCES` or `CAPABILITY_REQUIRED_SCHEMAS`. This helps ensure compatibility with different Crossplane versions.
+
+**Response Management:**
+
 - `normal(rsp, message)` - Add a normal condition to the response
 - `fatal(rsp, message)` - Add a fatal condition to the response
 - `to(req)` - Create a minimal response from a request
@@ -551,6 +591,61 @@ desiredComposed['my-pod'] = fromModel(pod);
 ```
 
 **Note**: As of SDK v0.4.0, the `fromModel` helper function provides a cleaner way to convert kubernetes-models objects to Crossplane Resources. The legacy approach using `Resource.fromJSON({ resource: pod.toJSON() })` is still supported but `fromModel` is now the recommended method.
+
+### Checking Resource Conditions (SDK v0.5.0+)
+
+The SDK provides the `getCondition` function to extract status conditions from resources:
+
+```typescript
+import {
+  getCondition,
+  getObservedComposedResources,
+} from '@crossplane-org/function-sdk-typescript';
+
+// Get observed composed resources
+const observedComposed = getObservedComposedResources(req);
+const observedDeployment = observedComposed['my-deployment'];
+
+if (observedDeployment?.resource) {
+  // Check if the deployment is available
+  const availableCondition = getCondition(observedDeployment.resource, 'Available');
+  const progressingCondition = getCondition(observedDeployment.resource, 'Progressing');
+
+  logger?.info(
+    {
+      deployment: observedDeployment.resource.metadata?.name,
+      available: availableCondition.status, // "True", "False", or "Unknown"
+      progressing: progressingCondition.status,
+    },
+    'Deployment conditions'
+  );
+}
+```
+
+The `getCondition` function returns a condition object with `status` set to `"Unknown"` if the condition type is not found, making it safe to use even when resources are newly created.
+
+### Detecting Crossplane Capabilities (SDK v0.5.0+)
+
+Use `hasCapability` to check what features are supported by the Crossplane version:
+
+```typescript
+import { hasCapability, Capability } from '@crossplane-org/function-sdk-typescript';
+
+// Check for specific capabilities
+const capabilities = {
+  requiredResources: hasCapability(req, Capability.CAPABILITY_REQUIRED_RESOURCES),
+  requiredSchemas: hasCapability(req, Capability.CAPABILITY_REQUIRED_SCHEMAS),
+};
+
+logger?.info({ capabilities }, 'Crossplane capabilities detected');
+
+// Conditionally enable features based on capabilities
+if (capabilities.requiredSchemas) {
+  // Use schema validation features available in Crossplane 2.2.0+
+}
+```
+
+This allows your function to gracefully adapt to different Crossplane versions and use features when available.
 
 ### Testing Your Function
 
@@ -648,7 +743,9 @@ Manual workflow for creating Git tags:
 
 ### Production Dependencies
 
-- `@crossplane-org/function-sdk-typescript` - Crossplane function SDK (v0.4.0+ includes `fromModel` helper)
+- `@crossplane-org/function-sdk-typescript` - Crossplane function SDK
+  - v0.4.0+: `fromModel` helper for converting kubernetes-models
+  - v0.5.0+: `getCondition` and `hasCapability` for status checking and capability detection
 - `commander` - CLI argument parsing
 - `pino` - Structured logging
 - `kubernetes-models` - Type-safe Kubernetes resource models
