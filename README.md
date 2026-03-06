@@ -392,9 +392,7 @@ npm run function-build-all
 
 ### Installing the Function Package Directly without a Configuration Package
 
-The function package can be installed directly without the need for a Configuration
-package. This installation method requires the application of the
-CompositeResourceDefinition and Composition manifests.
+The Function package can be installed without the need for a Configuration package.
 
 ```yaml
 apiVersion: pkg.crossplane.io/v1
@@ -405,7 +403,10 @@ spec:
   package: ghcr.io/crossplane/function-template-typescript:v0.4.0
 ```
 
-Next, apply the CompositeResourceDefinition and Composition manifests:
+The Function package will not install the
+related CompositeResourceDefinition and Composition manifests.
+
+Apply the CompositeResourceDefinition and Composition manifests:
 
 ```shell
 $ kubectl apply -f package-configuration/apis/apps
@@ -415,8 +416,7 @@ compositeresourcedefinition.apiextensions.crossplane.io/apps.platform.upbound.io
 
 ### Configuration Package
 
-Crossplane configuration packages install CompositeResourceDefinition and Composition manifests
-and install Functions and Providers as dependencies.
+Crossplane configuration packages install CompositeResourceDefinition and Composition manifests. The Configuration will install Function and Provider packages as dependencies.
 
 With the Function package created, the Configuration Package can be generated. We'll
 update the Configuration package metadata to include our function as a dependency.
@@ -463,6 +463,7 @@ Update the value with the name that represents the Docker registry and image whe
     name: crossplane-function-template-typescript
   step: app
 ```
+
 #### Build the Configuration Package
 
 Build the Crossplane configuration package:
