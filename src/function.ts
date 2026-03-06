@@ -9,6 +9,10 @@ import {
   getDesiredComposedResources,
   getDesiredCompositeResource,
   getObservedCompositeResource,
+  getObservedComposedResources,
+  getCondition,
+  hasCapability,
+  Capability,
   type FunctionHandler,
   type Logger,
 } from '@crossplane-org/function-sdk-typescript';
@@ -54,6 +58,15 @@ export class Function implements FunctionHandler {
     let rsp = to(req);
 
     try {
+      // Example: Check Crossplane capabilities
+      // hasCapability() allows checking what features are supported by the Crossplane version
+      // Starting with 2.2.0 Crossplane added the ability to download schemas.
+      const capabilities = {
+        requiredResources: hasCapability(req, Capability.CAPABILITY_REQUIRED_RESOURCES),
+        requiredSchemas: hasCapability(req, Capability.CAPABILITY_REQUIRED_SCHEMAS),
+      };
+      logger?.info({ capabilities }, 'Crossplane capabilities detected');
+
       // Get our Observed Composite
       const observedComposite = getObservedCompositeResource(req);
       logger?.debug({ observedComposite }, 'Observed composite resource');
@@ -209,6 +222,23 @@ export class Function implements FunctionHandler {
       });
 
       desiredComposed['deployment'] = fromModel(deployment);
+
+      // Example: Check the conditions of the observed deployment
+      // getCondition() extracts status conditions and returns "Unknown" if not found
+      const observedComposed = getObservedComposedResources(req);
+      const observedDeployment = observedComposed['deployment'];
+      if (observedDeployment?.resource) {
+        const availableCondition = getCondition(observedDeployment.resource, 'Available');
+        const progressingCondition = getCondition(observedDeployment.resource, 'Progressing');
+        logger?.info(
+          {
+            deployment: observedDeployment.resource.metadata?.name,
+            available: availableCondition.status,
+            progressing: progressingCondition.status,
+          },
+          'Deployment conditions'
+        );
+      }
 
       // Create Ingress if config is provided
       if (ingressConfig && Object.keys(ingressConfig).length > 0) {

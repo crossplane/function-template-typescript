@@ -359,7 +359,6 @@ export function assertResourceTypes(response: RunFunctionResponse, expectedTypes
  * Run all assertions for a test case
  */
 export function assertTestCase(response: RunFunctionResponse, testCase: TestCase) {
-
   if (testCase.expected.resources) {
     assertResources(response, testCase.expected.resources);
   }
